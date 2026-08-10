@@ -42,7 +42,18 @@
     'stand-livre': { k: 'Estande · Booth', t: 'Estande 8 × 5 m', e: 'Booth', b: 'Espaço de ativação no bloco central, ao lado do estande Natura.' },
     praca: { k: 'Alimentação · Food', t: 'Praça de Alimentação', e: 'Food court', b: 'A praça principal, na lateral esquerda do pavilhão, com mesas e opções quentes, frias e doces.' },
     barracas: { k: 'Alimentação · Food', t: 'Barracas de alimentação', e: 'Food stalls', b: 'Pontos avulsos de comida e bebida espalhados pelo pavilhão: um junto à entrada e dois no corredor direito.' },
-    credenciamento: { k: 'Entrada · Entrance', t: 'Credenciamento', e: 'Check-in', b: 'Retirada de credencial logo na entrada: fila Prime / Patrocinador à esquerda e fila Mind / VIP à direita. Tenha o QR code do ingresso em mãos.' }
+    credenciamento: { k: 'Entrada · Entrance', t: 'Credenciamento', e: 'Check-in', b: 'Retirada de credencial logo na entrada: fila Prime / Patrocinador à esquerda e fila Mind / VIP à direita. Tenha o QR code do ingresso em mãos.' },
+    'elevador-1': { k: 'Apoio · Services', t: 'Elevador', e: 'Elevator', b: 'Elevador de acesso ao 2º andar (Centro de Convenções), ao lado das escadas e do credenciamento.' },
+    'elevador-2': { k: 'Apoio · Services', t: 'Elevador', e: 'Elevator', b: 'Elevador de acesso ao 2º andar (Centro de Convenções), ao lado das escadas e do credenciamento.' },
+    'sala-vip3': { k: '2º andar · Sala', t: 'Workshop VIP 3', e: 'VIP Workshop 3', b: 'Sala 208 C · D, no Centro de Convenções (2º andar). Workshops exclusivos para credenciais VIP.' },
+    'sala-vip2': { k: '2º andar · Sala', t: 'Workshop VIP 2', e: 'VIP Workshop 2', b: 'Sala 208 A · B, no Centro de Convenções (2º andar). Workshops exclusivos para credenciais VIP.' },
+    'sala-vip1': { k: '2º andar · Sala', t: 'Workshop VIP 1', e: 'VIP Workshop 1', b: 'Sala 204 A · B · C, no Centro de Convenções (2º andar). Workshops exclusivos para credenciais VIP.' },
+    'sala-master': { k: '2º andar · Sala', t: 'Masterclass Prime', e: 'Prime Masterclass', b: 'Sala 206 A · B · C, no Centro de Convenções (2º andar). Masterclasses exclusivas para credenciais Prime.' },
+    'sala-mind2': { k: '2º andar · Sala', t: 'Sala Mind 2', e: 'Mind Room 2', b: 'Sala 207, no Centro de Convenções (2º andar). Sessões abertas a todas as credenciais Mind.' },
+    'sala-mind1': { k: '2º andar · Sala', t: 'Sala Mind 1', e: 'Mind Room 1', b: 'Sala 205, no Centro de Convenções (2º andar). Sessões abertas a todas as credenciais Mind.' },
+    'wc-2andar': { k: '2º andar · Apoio', t: 'Banheiros', e: 'Restrooms', b: 'Banheiros do 2º andar, distribuídos ao longo do corredor do Centro de Convenções.' },
+    'escada-2andar': { k: '2º andar · Apoio', t: 'Escadas', e: 'Stairs', b: 'Escadas de acesso entre o pavilhão (térreo) e o Centro de Convenções, no 2º andar.' },
+    'corredor-2andar': { k: '2º andar · Circulação', t: 'Corredor principal', e: 'Main corridor', b: 'Corredor que dá acesso a todas as salas do Centro de Convenções, no 2º andar.' }
   };
 
   var mapRoot = document.querySelector('.map-root');
@@ -52,6 +63,7 @@
   filters.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-cat]');
     if (!btn) return;
+    mapRoot.classList.add('interacted');
     var cat = btn.getAttribute('data-cat');
     var current = mapRoot.getAttribute('data-filter');
     // toggle: clicking the active category (or "Tudo") resets to all
@@ -91,7 +103,7 @@
   document.addEventListener('click', function (e) {
     if (e.target.closest('[data-close]')) { closeSheet(); return; }
     var zoneEl = e.target.closest('[data-zone]');
-    if (zoneEl) openSheet(zoneEl.getAttribute('data-zone'));
+    if (zoneEl) { mapRoot.classList.add('interacted'); openSheet(zoneEl.getAttribute('data-zone')); }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && host.classList.contains('is-open')) closeSheet();
@@ -239,6 +251,97 @@
   document.querySelectorAll('.scale-fit').forEach(function (frame) {
     controllers.push(buildPanZoom(frame));
   });
+
+  /* ---------- Entrance reveals ----------
+     - flowing sections fade+rise as they enter view
+     - the MAP fills in "attendee-journey" order, accelerating (slow → fast)
+     - the 2nd-floor rooms domino in via CSS when their card enters view */
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var mapInner = document.querySelector('.map-inner');
+
+    var filled = false;
+    function fillMap() {
+      if (filled || !mapInner) return;
+      filled = true;
+      if (reduce) { mapInner.classList.remove('anim'); return; }
+      // reveal everything softly and almost together, with a gentle bottom → top wash
+      var units = [].slice.call(document.querySelectorAll('.map-inner .layer > *'));
+      var bar = document.querySelector('.entrada-bar'); if (bar) units.push(bar);
+      var cred = document.querySelector('[data-zone="credenciamento"]'); if (cred) units.push(cred);
+      var SPREAD = 450;   // small, so it reads as simultaneous but unfurls from the bottom
+      var maxDelay = 0;
+      units.forEach(function (el) {
+        var topPct = parseFloat(el.style.top);
+        if (isNaN(topPct)) topPct = 50;
+        var delay = (100 - topPct) / 100 * SPREAD;   // lower on the map = a touch earlier
+        if (delay > maxDelay) maxDelay = delay;
+        setTimeout(function () { el.classList.add('rv'); }, delay);
+      });
+      // once the whole map has settled, ring every button one time, all together
+      setTimeout(function () {
+        [].forEach.call(document.querySelectorAll('.map-inner .zone'), function (z) { z.classList.add('pulse-once'); });
+      }, maxDelay + 1050);
+      setTimeout(function () { mapInner.classList.remove('anim'); }, maxDelay + 1250); // cleanup
+    }
+
+    // 2nd floor: after the rooms finish assembling, ring every button once, together
+    var floor2Pulsed = false;
+    function pulseFloor2() {
+      if (floor2Pulsed || reduce) return;
+      floor2Pulsed = true;
+      setTimeout(function () {
+        [].forEach.call(document.querySelectorAll('.floor2 .zone'), function (z) { z.classList.add('pulse-once'); });
+      }, 1900);
+    }
+
+    function trigger(el) {
+      el.classList.add('in');
+      if (el.classList.contains('scale-fit')) fillMap();
+      if (el.classList.contains('floor2-wrap')) pulseFloor2();
+    }
+
+    var els = [].slice.call(document.querySelectorAll('.reveal, .scale-fit'));
+    if (!('IntersectionObserver' in window)) { els.forEach(trigger); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { trigger(e.target); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
+    els.forEach(function (el, i) {
+      if (el.getBoundingClientRect().top < window.innerHeight) {
+        el.style.transitionDelay = (Math.min(i, 6) * 120) + 'ms';   // stagger the first screenful
+      }
+      io.observe(el);
+    });
+    // safety net: reveal in-view items on full load if IO didn't fire
+    window.addEventListener('load', function () {
+      els.forEach(function (el) {
+        if (!el.classList.contains('in') && el.getBoundingClientRect().top < window.innerHeight) trigger(el);
+      });
+    });
+  })();
+
+  /* ---------- Press feedback on tappable zones ---------- */
+  (function () {
+    var pressed = null, sx = 0, sy = 0;
+    function release() { if (pressed) { pressed.classList.remove('is-pressed'); pressed = null; } }
+    document.addEventListener('pointerdown', function (e) {
+      var z = e.target.closest('[data-zone]');
+      if (!z) return;
+      release(); pressed = z; sx = e.clientX; sy = e.clientY;
+      z.classList.add('is-pressed');
+    }, true);
+    document.addEventListener('pointermove', function (e) {
+      if (pressed && (Math.abs(e.clientX - sx) > 10 || Math.abs(e.clientY - sy) > 10)) release();
+    }, { capture: true, passive: true });
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      document.addEventListener(ev, release, true);
+    });
+  })();
+
+  /* ---------- Stop the "start here" pulse after a while even without interaction ---------- */
+  setTimeout(function () { mapRoot.classList.add('interacted'); }, 14000);
 
   /* ---------- Praça hover (unified L outline; deterministic, no :has reliance) ---------- */
   document.querySelectorAll('[data-zone="praca"]').forEach(function (praca) {

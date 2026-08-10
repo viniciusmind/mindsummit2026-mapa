@@ -30,8 +30,8 @@
   /* horizontal inset for the flowing sections (40 desktop / 20 mobile) */
   --pad:clamp(20px,5vw,40px);
 
-  --dur-fast:160ms;
-  --dur-base:280ms;
+  --dur-fast:240ms;
+  --dur-base:480ms;
   --ease-out:cubic-bezier(0.16,1,0.3,1);
 }
 
@@ -163,14 +163,15 @@ a:hover{color:var(--light)}
 .map-inner{position:absolute;left:20px;top:10px;width:960px;height:1878px}
 
 /* layers + filter dimming */
-.layer{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;transition:opacity var(--dur-fast)}
+.layer{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out)}
 .map-root[data-filter="all"] .layer{opacity:1}
-.map-root:not([data-filter="all"]) .layer{opacity:.3}
+/* filtering: non-matching layers fade AND recede slightly, so the chosen one pops forward */
+.map-root:not([data-filter="all"]) .layer{opacity:.28;transform:scale(.985)}
 .map-root[data-filter="arena"]  .layer[data-layer="arena"],
 .map-root[data-filter="stand"]  .layer[data-layer="stand"],
 .map-root[data-filter="lounge"] .layer[data-layer="lounge"],
 .map-root[data-filter="food"]   .layer[data-layer="food"],
-.map-root[data-filter="apoio"]  .layer[data-layer="apoio"]{opacity:1}
+.map-root[data-filter="apoio"]  .layer[data-layer="apoio"]{opacity:1;transform:none}
 
 .zone{pointer-events:auto;cursor:pointer}
 .zone:hover{outline:2px solid rgba(255,255,255,0.35);outline-offset:2px;border-radius:8px}
@@ -197,7 +198,6 @@ a:hover{color:var(--light)}
   border-radius:14px;background:var(--arena-navy);
   padding:20px;display:flex;flex-direction:column;gap:16px;cursor:pointer;
 }
-.floor2:hover{outline:2px solid rgba(255,255,255,0.18);outline-offset:2px}
 .floor2-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .floor2-eyebrow{font-size:12px;font-weight:700;color:#8CA0BE;letter-spacing:0.24em;text-transform:uppercase;line-height:1}
 .floor2-title{font-size:clamp(24px,3.4vw,30px);font-weight:900;color:var(--light);letter-spacing:-0.02em;text-transform:uppercase;line-height:0.94}
@@ -208,7 +208,7 @@ a:hover{color:var(--light)}
 
 /* the room strip scrolls horizontally on narrow screens, keeping proportions */
 .floor2-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.floor2-diagram{display:flex;flex-direction:column;gap:8px;min-width:720px}
+.floor2-diagram{display:flex;flex-direction:column;gap:8px;min-width:500px}
 .rooms{display:flex;gap:5px;height:82px}
 .room{height:100%}
 .room-empty{width:100%;height:100%;border-radius:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(140,160,190,0.28);display:flex;align-items:center;justify-content:center}
@@ -220,6 +220,7 @@ a:hover{color:var(--light)}
 .room-named{width:100%;height:100%;border-radius:5px;background:var(--cinza-100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;text-align:center}
 .room-named .t{font-size:11px;font-weight:900;color:var(--neutral-dark);line-height:1.15;letter-spacing:-0.01em}
 .room-named .c{font-size:9px;font-weight:700;color:#4A4A5A;line-height:1;letter-spacing:0.03em}
+.wc-cell{width:100%;height:100%;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(140,160,190,0.28);display:flex;align-items:center;justify-content:center}
 .corridor{display:flex;gap:5px;height:38px}
 .corridor-main{flex:1;border-radius:5px;background:var(--cinza-300);display:flex;align-items:center;padding:0 16px;gap:10px}
 .corridor-main .ico{width:18px;height:18px;color:#8CA0BE}
@@ -288,4 +289,86 @@ a:hover{color:var(--light)}
 @media (max-width:560px){
   .hero{align-items:flex-start}
   .hero-right{text-align:left;padding-bottom:0}
+}
+
+/* ============================================================
+   ANIMATIONS
+   Calm, on-brand motion: fades + small moves, ease-out, no bounce.
+   Everything is gated on `.js` so the page is fully visible when
+   JavaScript is unavailable, and softened under reduced-motion.
+   ============================================================ */
+
+/* --- entrance reveal for the flowing sections (fade + rise) --- */
+.js .reveal{opacity:0;transform:translateY(16px);transition:opacity 1.05s var(--ease-out),transform 1.05s var(--ease-out)}
+.js .reveal.in{opacity:1;transform:none}
+
+/* --- map fills in "attendee-journey" order, accelerating (sequenced by JS) ---
+   Units are hidden while `.map-inner` carries `.anim`; JS adds `.rv` one by one. */
+.js .map-inner.anim .layer > *,
+.js .map-inner.anim > .entrada-bar,
+.js .map-inner.anim > [data-zone="credenciamento"]{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .95s var(--ease-out),transform .95s var(--ease-out);
+}
+.js .map-inner.anim .layer > *.rv,
+.js .map-inner.anim > .entrada-bar.rv,
+.js .map-inner.anim > [data-zone="credenciamento"].rv{opacity:1;transform:none}
+
+/* --- 2nd floor: card settles fast, THEN rooms tip in one by one (domino) ---
+   (the card's own fade must finish before the rooms start, or it masks the first ones) */
+.js .floor2-wrap.reveal{transition-duration:.5s}
+@keyframes roomIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.js .floor2-wrap:not(.in) .room{opacity:0}
+.js .floor2-wrap.in .room{animation:roomIn .95s var(--ease-out) backwards}
+.js .floor2-wrap.in .room:nth-child(1){animation-delay:.40s}
+.js .floor2-wrap.in .room:nth-child(2){animation-delay:.45s}
+.js .floor2-wrap.in .room:nth-child(3){animation-delay:.50s}
+.js .floor2-wrap.in .room:nth-child(4){animation-delay:.55s}
+.js .floor2-wrap.in .room:nth-child(5){animation-delay:.60s}
+.js .floor2-wrap.in .room:nth-child(6){animation-delay:.65s}
+.js .floor2-wrap.in .room:nth-child(7){animation-delay:.70s}
+.js .floor2-wrap.in .room:nth-child(8){animation-delay:.75s}
+.js .floor2-wrap.in .room:nth-child(9){animation-delay:.80s}
+.js .floor2-wrap.in .room:nth-child(10){animation-delay:.85s}
+
+/* --- press feedback on tappable zones --- */
+.js .zone{transition:transform .22s var(--ease-out)}
+.js .zone.is-pressed{transform:scale(.97)}
+
+/* --- one-time attention pulse: every button rings once as it appears --- */
+@keyframes pulseOnce{
+  0%{box-shadow:0 0 0 0 rgba(104,238,149,.5)}
+  70%{box-shadow:0 0 0 10px rgba(104,238,149,0)}
+  100%{box-shadow:0 0 0 0 rgba(104,238,149,0)}
+}
+.js .zone.pulse-once{animation:pulseOnce 2.2s var(--ease-out) 1}
+
+/* --- bottom sheet: content cascades in after the sheet slides up --- */
+.js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .btn-close{
+  opacity:0;transform:translateY(9px);
+  transition:opacity .5s var(--ease-out),transform .5s var(--ease-out);
+}
+.js .is-open .sheet-kind{opacity:1;transform:none;transition-delay:.16s}
+.js .is-open .sheet-title{opacity:1;transform:none;transition-delay:.24s}
+.js .is-open .sheet-title-en{opacity:1;transform:none;transition-delay:.31s}
+.js .is-open .sheet-body{opacity:1;transform:none;transition-delay:.39s}
+.js .is-open .btn-close{opacity:1;transform:none;transition-delay:.47s}
+
+/* --- ambient: the top glow breathes very slowly --- */
+@keyframes breathe{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.42;transform:scale(1.06)}}
+.js .glow{animation:breathe 15s ease-in-out infinite}
+
+/* --- respect users who prefer less motion --- */
+@media (prefers-reduced-motion: reduce){
+  .js .reveal{opacity:1;transform:none;transition:none}
+  .js .map-inner.anim .layer > *,
+  .js .map-inner.anim > .entrada-bar,
+  .js .map-inner.anim > [data-zone="credenciamento"]{opacity:1;transform:none;transition:none}
+  .js .floor2-wrap:not(.in) .room{opacity:1}
+  .js .floor2-wrap.in .room{animation:none}
+  .js .zone.is-pressed{transform:none}
+  .js .zone.pulse-once{animation:none}
+  .js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .btn-close{opacity:1;transform:none;transition:none}
+  .js .glow{animation:none}
+  .map-root:not([data-filter="all"]) .layer{transform:none}   /* keep the dim, drop the movement */
 }

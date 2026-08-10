@@ -5,14 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mind Summit 2026 · Mapa do evento</title>
 <meta name="description" content="Mapa interativo do Mind Summit 2026 — Pavilhão 3, Transamérica Expo Center, São Paulo. 16 e 17 de setembro de 2026.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#0B0B0F">
 <link rel="stylesheet" href="styles.css">
+<script>
+  document.documentElement.classList.add('js');
+  /* failsafe: never leave the map hidden if the main script fails to run */
+  setTimeout(function(){var m=document.querySelector('.map-inner');if(m)m.classList.remove('anim');},4500);
+</script>
 </head>
 <body>
 
 <!-- ============ ICON SPRITE (Phosphor fill — inlined, fully offline) ============ -->
 <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
   <defs>
-    <symbol id="i-toilet" viewBox="0 0 256 256"><path d="M60,88H196a4,4,0,0,0,4-4V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V84A4,4,0,0,0,60,88ZM88,48h15.73A8.18,8.18,0,0,1,112,55.47,8,8,0,0,1,104,64H88.27A8.18,8.18,0,0,1,80,56.53,8,8,0,0,1,88,48Zm136,64.06a8,8,0,0,0-8-8.06H40a8,8,0,0,0-8,8.06,96.1,96.1,0,0,0,51.68,85.08l-3.47,24.27a16.43,16.43,0,0,0,1.63,10A16,16,0,0,0,96,240h63.66a16.52,16.52,0,0,0,9.72-3,16,16,0,0,0,6.46-15.23l-3.52-24.6A96.1,96.1,0,0,0,224,112.06ZM96,224l2.93-20.5a96.15,96.15,0,0,0,58.14,0L160,224Z"/></symbol>
+    <symbol id="i-restroom" viewBox="0 0 256 256">
+      <rect x="122" y="30" width="9" height="196" rx="4.5"/>
+      <circle cx="64" cy="44" r="25"/>
+      <rect x="34" y="80" width="60" height="82" rx="20"/>
+      <rect x="45" y="150" width="17" height="72" rx="7"/>
+      <rect x="66" y="150" width="17" height="72" rx="7"/>
+      <circle cx="192" cy="44" r="25"/>
+      <rect x="172" y="80" width="40" height="42" rx="16"/>
+      <path d="M171,110 L213,110 L230,181 L154,181 Z"/>
+      <rect x="176" y="176" width="15" height="46" rx="6"/>
+      <rect x="193" y="176" width="15" height="46" rx="6"/>
+    </symbol>
     <symbol id="i-steps" viewBox="0 0 256 256"><path d="M240,56V200a8,8,0,0,1-8,8H8a8,8,0,0,1,0-16H56V152a8,8,0,0,1,8-8h48V104a8,8,0,0,1,8-8h48V56a8,8,0,0,1,8-8h56A8,8,0,0,1,240,56Z"/></symbol>
     <symbol id="i-coat-hanger" viewBox="0 0 256 256"><path d="M241.57,171.2,141.33,96l23.46-17.6A8,8,0,0,0,168,72a40,40,0,1,0-80,0,8,8,0,0,0,16,0,24,24,0,0,1,47.69-3.78L14.43,171.2A16,16,0,0,0,24,200H232a16,16,0,0,0,9.6-28.8ZM32.73,184C53.6,170.59,89.49,152,128,152s74.4,18.59,95.27,32Z"/></symbol>
     <symbol id="i-headphones" viewBox="0 0 256 256"><path d="M232,128v56a24,24,0,0,1-24,24H192a24,24,0,0,1-24-24V144a24,24,0,0,1,24-24h23.65a87.71,87.71,0,0,0-87-80H128a88,88,0,0,0-87.64,80H64a24,24,0,0,1,24,24v40a24,24,0,0,1-24,24H48a24,24,0,0,1-24-24V128A104.11,104.11,0,0,1,201.89,54.66,103.41,103.41,0,0,1,232,128Z"/></symbol>
@@ -22,6 +41,7 @@
     <symbol id="i-identification-badge" viewBox="0 0 256 256"><path d="M200,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V40A16,16,0,0,0,200,24ZM96,48h64a8,8,0,0,1,0,16H96a8,8,0,0,1,0-16Zm84.81,150.4a8,8,0,0,1-11.21-1.6,52,52,0,0,0-83.2,0,8,8,0,1,1-12.8-9.6A67.88,67.88,0,0,1,101,165.51a40,40,0,1,1,53.94,0A67.88,67.88,0,0,1,182.4,187.2,8,8,0,0,1,180.81,198.4ZM152,136a24,24,0,1,1-24-24A24,24,0,0,1,152,136Z"/></symbol>
     <symbol id="i-sign-out" viewBox="0 0 256 256"><path d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40A8,8,0,0,0,176,88v32H112a8,8,0,0,0,0,16h64v32a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,229.66,122.34Z"/></symbol>
     <symbol id="i-sign-in" viewBox="0 0 256 256"><path d="M141.66,133.66l-40,40A8,8,0,0,1,88,168V136H24a8,8,0,0,1,0-16H88V88a8,8,0,0,1,13.66-5.66l40,40A8,8,0,0,1,141.66,133.66ZM200,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h64a8,8,0,0,0,8-8V40A8,8,0,0,0,200,32Z"/></symbol>
+    <symbol id="i-elevator" viewBox="0 0 256 256"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM112,56h32a8,8,0,0,1,0,16H112a8,8,0,0,1,0-16Zm8,152H64V96h56Zm72,0H136V96h56Z"/></symbol>
     <symbol id="i-arrows-out-line-horizontal" viewBox="0 0 256 256"><path d="M104,128a8,8,0,0,1-8,8H56v24a8,8,0,0,1-13.66,5.66l-32-32a8,8,0,0,1,0-11.32l32-32A8,8,0,0,1,56,96v24H96A8,8,0,0,1,104,128Zm141.66-5.66-32-32A8,8,0,0,0,200,96v24H160a8,8,0,0,0,0,16h40v24a8,8,0,0,0,13.66,5.66l32-32A8,8,0,0,0,245.66,122.34ZM128,32a8,8,0,0,0-8,8V216a8,8,0,0,0,16,0V40A8,8,0,0,0,128,32Z"/></symbol>
   </defs>
 </svg>
@@ -30,7 +50,7 @@
   <div class="glow"></div>
 
   <!-- ============ HEADER ============ -->
-  <header class="hero pad">
+  <header class="hero pad reveal">
     <div class="hero-left">
       <span class="badge">Mapa do evento</span>
       <h1>Mind Summit<br>2026<span class="dot">.</span></h1>
@@ -42,7 +62,7 @@
   </header>
 
   <!-- ============ FILTERS ============ -->
-  <nav class="filters pad" id="filters" aria-label="Filtrar áreas do mapa">
+  <nav class="filters pad reveal" id="filters" aria-label="Filtrar áreas do mapa">
     <button class="pill is-active" data-cat="all">Tudo</button>
     <button class="pill" data-cat="arena">Arenas</button>
     <button class="pill" data-cat="stand">Estandes</button>
@@ -54,33 +74,41 @@
   <!-- ============ FLOOR PLAN (auto-scaled + pan/zoom) ============ -->
   <div class="scale-fit" data-w="1000" data-h="1918">
     <div class="scale-inner map-box">
-      <div class="map-inner">
+      <div class="map-inner anim">
 
         <!-- APOIO -->
         <div class="layer" data-layer="apoio">
           <div class="zone" data-zone="banheiro-topo" style="position:absolute;left:0%;top:0.75%;width:21.91%;height:2.87%;border-radius:8px;background:#2C2D3D;display:flex;align-items:center;justify-content:center;gap:8px">
-            <svg class="ico" width="24" height="24" style="color:#8F8FA3"><use href="#i-toilet"/></svg>
+            <svg class="ico" width="30" height="30" style="color:#8F8FA3"><use href="#i-restroom"/></svg>
             <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1">Banheiros</span>
           </div>
-          <div class="zone" data-zone="escada-1" style="position:absolute;left:0%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+          <div class="zone" data-zone="escada-1" style="position:absolute;left:0%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
             <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
             <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
           </div>
-          <div class="zone" data-zone="banheiro-base" style="position:absolute;left:27%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
-            <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-toilet"/></svg>
+          <div class="zone" data-zone="banheiro-base" style="position:absolute;left:27%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+            <svg class="ico" width="26" height="26" style="color:#8F8FA3"><use href="#i-restroom"/></svg>
             <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Banheiros</span>
           </div>
-          <div class="zone" data-zone="escada-3" style="position:absolute;left:39.5%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+          <div class="zone" data-zone="escada-3" style="position:absolute;left:39.5%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
             <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
             <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
           </div>
-          <div class="zone" data-zone="chapelaria" style="position:absolute;left:52%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+          <div class="zone" data-zone="chapelaria" style="position:absolute;left:52%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
             <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-coat-hanger"/></svg>
             <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Chapelaria</span>
           </div>
-          <div class="zone" data-zone="escada-2" style="position:absolute;left:89%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+          <div class="zone" data-zone="escada-2" style="position:absolute;left:89%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
             <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
             <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+          </div>
+          <div class="zone" data-zone="elevador-1" style="position:absolute;left:0%;top:85.15%;width:11%;height:2.85%;border-radius:8px;background:#2C2D3D;padding:0 8px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg class="ico" width="19" height="19" style="color:#8F8FA3"><use href="#i-elevator"/></svg>
+            <span style="font-size:12px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Elevador</span>
+          </div>
+          <div class="zone" data-zone="elevador-2" style="position:absolute;left:89%;top:85.15%;width:11%;height:2.85%;border-radius:8px;background:#2C2D3D;padding:0 8px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg class="ico" width="19" height="19" style="color:#8F8FA3"><use href="#i-elevator"/></svg>
+            <span style="font-size:12px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Elevador</span>
           </div>
           <div class="zone" data-zone="traducao-1" style="position:absolute;left:57.5%;top:18.95%;width:8.4%;height:2.39%;border-radius:6px;background:#2C2D3D;transform:rotate(270deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
             <svg class="ico" width="13" height="13" style="color:#8F8FA3"><use href="#i-headphones"/></svg>
@@ -94,7 +122,7 @@
 
         <!-- ARENA -->
         <div class="layer" data-layer="arena">
-          <div style="position:absolute;left:2.62%;top:4.9%;width:57.12%;height:48.02%;border-radius:14px;background:#0F1B33">
+          <div class="arena-box" style="position:absolute;left:2.62%;top:4.9%;width:57.12%;height:48.02%;border-radius:14px;background:#0F1B33">
             <div class="zone" data-zone="arena-mind" style="position:absolute;left:1.64%;top:0.9%;width:96.7%;height:5.8%;display:flex;flex-direction:column;justify-content:center;gap:5px;padding-left:4px">
               <span style="font-size:12px;font-weight:700;color:#8CA0BE;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Arena</span>
               <span style="font-size:30px;font-weight:900;color:#FFFFFF;letter-spacing:-0.02em;text-transform:uppercase;line-height:0.94">Mind<span style="color:#68EE95">.</span></span>
@@ -248,7 +276,7 @@
         </div>
 
         <!-- FIXED: credenciamento + entrada/saída -->
-        <div class="zone" data-zone="credenciamento" style="position:absolute;left:64%;top:91.2%;width:24%;height:3.35%;border-radius:10px;background:#FFFFFF;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:12px">
+        <div class="zone pulse-hint" data-zone="credenciamento" style="position:absolute;left:64%;top:92.4%;width:24%;height:3.35%;border-radius:10px;background:#FFFFFF;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:12px">
           <svg class="ico" width="22" height="22" style="color:#13131A"><use href="#i-identification-badge"/></svg>
           <div style="display:flex;flex-direction:column;gap:4px">
             <span style="font-size:15px;font-weight:900;color:#13131A;letter-spacing:0.02em;line-height:1;white-space:nowrap">CREDENCIAMENTO</span>
@@ -256,7 +284,7 @@
           </div>
         </div>
 
-        <div style="position:absolute;left:64%;top:95.9%;width:24%;height:2.7%;border-radius:8px;background:#2C2D3D;display:flex;overflow:hidden">
+        <div class="entrada-bar" style="position:absolute;left:64%;top:97.1%;width:24%;height:2.7%;border-radius:8px;background:#2C2D3D;display:flex;overflow:hidden">
           <div class="zone" data-zone="saida" style="flex:1 1 0;display:flex;align-items:center;justify-content:center;gap:8px">
             <svg class="ico" width="19" height="19" style="color:#FFFFFF"><use href="#i-sign-out"/></svg>
             <span style="font-size:13px;font-weight:900;color:#FFFFFF;letter-spacing:0.06em">SAÍDA</span>
@@ -277,8 +305,8 @@
   </div>
 
   <!-- ============ 2ND FLOOR ============ -->
-  <div class="floor2-wrap pad">
-    <div class="zone floor2" data-zone="segundo-andar">
+  <div class="floor2-wrap pad reveal">
+    <div class="floor2" data-zone="segundo-andar">
       <div class="floor2-head">
         <div style="display:flex;flex-direction:column;gap:5px">
           <span class="floor2-eyebrow">2º andar · Upper floor</span>
@@ -296,26 +324,24 @@
       <div class="floor2-scroll">
         <div class="floor2-diagram">
           <div class="rooms">
-            <div class="room" style="flex:749 1 0;min-width:28px"><div class="room-empty"><span class="n">211</span></div></div>
-            <div class="room" style="flex:264 1 0;min-width:90px"><div class="room-split"><div><span class="n">210</span><span class="s">C</span></div><div><span class="n">210</span><span class="s">B</span></div><div><span class="n">210</span><span class="s">A</span></div></div></div>
-            <div class="room" style="flex:88 1 0;min-width:28px"><div class="room-empty"><span class="n">209</span></div></div>
-            <div class="room" style="flex:238 1 0;min-width:70px"><div class="room-named"><span class="t">Workshop<br>VIP 3</span><span class="c">208 C · D</span></div></div>
-            <div class="room" style="flex:238 1 0;min-width:70px"><div class="room-named"><span class="t">Workshop<br>VIP 2</span><span class="c">208 A · B</span></div></div>
-            <div class="room" style="flex:175 1 0;min-width:70px"><div class="room-named"><span class="t">Sala<br>Mind 2</span><span class="c">Sala 207</span></div></div>
-            <div class="room" style="flex:366 1 0;min-width:86px"><div class="room-named"><span class="t">Masterclass<br>Prime</span><span class="c">206 A · B · C</span></div></div>
-            <div class="room" style="flex:99 1 0;min-width:70px"><div class="room-named"><span class="t">Sala<br>Mind 1</span><span class="c">Sala 205</span></div></div>
-            <div class="room" style="flex:264 1 0;min-width:70px"><div class="room-named"><span class="t">Workshop<br>VIP 1</span><span class="c">204 A · B · C</span></div></div>
-            <div class="room" style="flex:490 1 0;min-width:121px"><div class="room-split"><div><span class="n">203</span><span class="s">D</span></div><div><span class="n">203</span><span class="s">C</span></div><div><span class="n">203</span><span class="s">B</span></div><div><span class="n">203</span><span class="s">A</span></div></div></div>
-            <div class="room" style="flex:88 1 0;min-width:28px"><div class="room-empty"><span class="n">202</span></div></div>
-            <div class="room" style="flex:88 1 0;min-width:28px"><div class="room-empty"><span class="n">201</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
+            <div class="room zone" data-zone="sala-vip3" style="flex:238 1 0;min-width:78px"><div class="room-named"><span class="t">Workshop<br>VIP 3</span><span class="c">208 C · D</span></div></div>
+            <div class="room zone" data-zone="sala-vip2" style="flex:238 1 0;min-width:78px"><div class="room-named"><span class="t">Workshop<br>VIP 2</span><span class="c">208 A · B</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
+            <div class="room zone" data-zone="sala-mind2" style="flex:175 1 0;min-width:72px"><div class="room-named"><span class="t">Sala<br>Mind 2</span><span class="c">Sala 207</span></div></div>
+            <div class="room zone" data-zone="sala-master" style="flex:366 1 0;min-width:92px"><div class="room-named"><span class="t">Masterclass<br>Prime</span><span class="c">206 A · B · C</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
+            <div class="room zone" data-zone="sala-mind1" style="flex:99 1 0;min-width:72px"><div class="room-named"><span class="t">Sala<br>Mind 1</span><span class="c">Sala 205</span></div></div>
+            <div class="room zone" data-zone="sala-vip1" style="flex:264 1 0;min-width:80px"><div class="room-named"><span class="t">Workshop<br>VIP 1</span><span class="c">204 A · B · C</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
           </div>
           <div class="corridor">
-            <div class="corridor-main">
+            <div class="corridor-main zone" data-zone="corredor-2andar">
               <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
               <span class="a">Corredor principal</span>
               <span class="b">acesso a todas as salas</span>
             </div>
-            <div class="corridor-stairs">
+            <div class="corridor-stairs zone" data-zone="escada-2andar">
               <svg class="ico"><use href="#i-steps"/></svg>
               <span>Escadas</span>
             </div>
@@ -330,7 +356,7 @@
   </div>
 
   <!-- ============ LEGENDS ============ -->
-  <div class="legends pad">
+  <div class="legends pad reveal">
     <div class="legend-col">
       <div class="legend-eyebrow">Seu assento na Arena Mind</div>
       <div class="seat-list">
@@ -353,7 +379,7 @@
   </div>
 
   <!-- ============ FOOTNOTE ============ -->
-  <div class="footnote pad">
+  <div class="footnote pad reveal">
     <div class="a">Não perca o caminho.</div>
     <div class="b">Clique em qualquer área do mapa para ver os detalhes. A equipe Mind está à disposição para ajudar.</div>
   </div>
