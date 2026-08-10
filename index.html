@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mind Summit 2026 · Mapa do evento</title>
+<meta name="description" content="Mapa interativo do Mind Summit 2026 — Pavilhão 3, Transamérica Expo Center, São Paulo. 16 e 17 de setembro de 2026.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ ICON SPRITE (Phosphor fill — inlined, fully offline) ============ -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-toilet" viewBox="0 0 256 256"><path d="M60,88H196a4,4,0,0,0,4-4V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V84A4,4,0,0,0,60,88ZM88,48h15.73A8.18,8.18,0,0,1,112,55.47,8,8,0,0,1,104,64H88.27A8.18,8.18,0,0,1,80,56.53,8,8,0,0,1,88,48Zm136,64.06a8,8,0,0,0-8-8.06H40a8,8,0,0,0-8,8.06,96.1,96.1,0,0,0,51.68,85.08l-3.47,24.27a16.43,16.43,0,0,0,1.63,10A16,16,0,0,0,96,240h63.66a16.52,16.52,0,0,0,9.72-3,16,16,0,0,0,6.46-15.23l-3.52-24.6A96.1,96.1,0,0,0,224,112.06ZM96,224l2.93-20.5a96.15,96.15,0,0,0,58.14,0L160,224Z"/></symbol>
+    <symbol id="i-steps" viewBox="0 0 256 256"><path d="M240,56V200a8,8,0,0,1-8,8H8a8,8,0,0,1,0-16H56V152a8,8,0,0,1,8-8h48V104a8,8,0,0,1,8-8h48V56a8,8,0,0,1,8-8h56A8,8,0,0,1,240,56Z"/></symbol>
+    <symbol id="i-coat-hanger" viewBox="0 0 256 256"><path d="M241.57,171.2,141.33,96l23.46-17.6A8,8,0,0,0,168,72a40,40,0,1,0-80,0,8,8,0,0,0,16,0,24,24,0,0,1,47.69-3.78L14.43,171.2A16,16,0,0,0,24,200H232a16,16,0,0,0,9.6-28.8ZM32.73,184C53.6,170.59,89.49,152,128,152s74.4,18.59,95.27,32Z"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 256 256"><path d="M232,128v56a24,24,0,0,1-24,24H192a24,24,0,0,1-24-24V144a24,24,0,0,1,24-24h23.65a87.71,87.71,0,0,0-87-80H128a88,88,0,0,0-87.64,80H64a24,24,0,0,1,24,24v40a24,24,0,0,1-24,24H48a24,24,0,0,1-24-24V128A104.11,104.11,0,0,1,201.89,54.66,103.41,103.41,0,0,1,232,128Z"/></symbol>
+    <symbol id="i-book-open-text" viewBox="0 0 256 256"><path d="M232,48H168a32,32,0,0,0-32,32v87.73a8.17,8.17,0,0,1-7.47,8.25,8,8,0,0,1-8.53-8V80A32,32,0,0,0,88,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,23.94,7.9,7.9,0,0,0,5.12,7.55A8,8,0,0,0,136,232a24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM208,168H168.27a8.17,8.17,0,0,1-8.25-7.47,8,8,0,0,1,8-8.53h39.73a8.17,8.17,0,0,1,8.25,7.47A8,8,0,0,1,208,168Zm0-32H168.27a8.17,8.17,0,0,1-8.25-7.47,8,8,0,0,1,8-8.53h39.73a8.17,8.17,0,0,1,8.25,7.47A8,8,0,0,1,208,136Zm0-32H168.27A8.17,8.17,0,0,1,160,96.53,8,8,0,0,1,168,88h39.73A8.17,8.17,0,0,1,216,95.47,8,8,0,0,1,208,104Z"/></symbol>
+    <symbol id="i-fork-knife" viewBox="0 0 256 256"><path d="M216,40V224a8,8,0,0,1-16,0V176H152a8,8,0,0,1-8-8,268.75,268.75,0,0,1,7.22-56.88c9.78-40.49,28.32-67.63,53.63-78.47A8,8,0,0,1,216,40Zm-96.11-1.31a8,8,0,1,0-15.78,2.63L111.89,88H88V40a8,8,0,0,0-16,0V88H48.11l7.78-46.68a8,8,0,1,0-15.78-2.63l-8,48A8.17,8.17,0,0,0,32,88a48.07,48.07,0,0,0,40,47.32V224a8,8,0,0,0,16,0V135.32A48.07,48.07,0,0,0,128,88a8.17,8.17,0,0,0-.11-1.31Z"/></symbol>
+    <symbol id="i-storefront" viewBox="0 0 256 256"><path d="M231.69,93.81,217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.81A7.94,7.94,0,0,0,24,96v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96A7.94,7.94,0,0,0,231.69,93.81ZM88,112a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8H88Zm64,0a24,24,0,0,1-48,0v-8h48Zm64,0a24,24,0,0,1-11.07,20.2,8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48Z"/></symbol>
+    <symbol id="i-identification-badge" viewBox="0 0 256 256"><path d="M200,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V40A16,16,0,0,0,200,24ZM96,48h64a8,8,0,0,1,0,16H96a8,8,0,0,1,0-16Zm84.81,150.4a8,8,0,0,1-11.21-1.6,52,52,0,0,0-83.2,0,8,8,0,1,1-12.8-9.6A67.88,67.88,0,0,1,101,165.51a40,40,0,1,1,53.94,0A67.88,67.88,0,0,1,182.4,187.2,8,8,0,0,1,180.81,198.4ZM152,136a24,24,0,1,1-24-24A24,24,0,0,1,152,136Z"/></symbol>
+    <symbol id="i-sign-out" viewBox="0 0 256 256"><path d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40A8,8,0,0,0,176,88v32H112a8,8,0,0,0,0,16h64v32a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,229.66,122.34Z"/></symbol>
+    <symbol id="i-sign-in" viewBox="0 0 256 256"><path d="M141.66,133.66l-40,40A8,8,0,0,1,88,168V136H24a8,8,0,0,1,0-16H88V88a8,8,0,0,1,13.66-5.66l40,40A8,8,0,0,1,141.66,133.66ZM200,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h64a8,8,0,0,0,8-8V40A8,8,0,0,0,200,32Z"/></symbol>
+    <symbol id="i-arrows-out-line-horizontal" viewBox="0 0 256 256"><path d="M104,128a8,8,0,0,1-8,8H56v24a8,8,0,0,1-13.66,5.66l-32-32a8,8,0,0,1,0-11.32l32-32A8,8,0,0,1,56,96v24H96A8,8,0,0,1,104,128Zm141.66-5.66-32-32A8,8,0,0,0,200,96v24H160a8,8,0,0,0,0,16h40v24a8,8,0,0,0,13.66,5.66l32-32A8,8,0,0,0,245.66,122.34ZM128,32a8,8,0,0,0-8,8V216a8,8,0,0,0,16,0V40A8,8,0,0,0,128,32Z"/></symbol>
+  </defs>
+</svg>
+
+<main class="page map-root" data-filter="all">
+  <div class="glow"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="hero pad">
+    <div class="hero-left">
+      <span class="badge">Mapa do evento</span>
+      <h1>Mind Summit<br>2026<span class="dot">.</span></h1>
+    </div>
+    <div class="hero-right">
+      <div class="hero-date" id="event-dates">16 e 17 de setembro de 2026</div>
+      <div class="hero-loc">Pavilhão 3 · Transamérica Expo Center · São Paulo</div>
+    </div>
+  </header>
+
+  <!-- ============ FILTERS ============ -->
+  <nav class="filters pad" id="filters" aria-label="Filtrar áreas do mapa">
+    <button class="pill is-active" data-cat="all">Tudo</button>
+    <button class="pill" data-cat="arena">Arenas</button>
+    <button class="pill" data-cat="stand">Estandes</button>
+    <button class="pill" data-cat="lounge">Lounges</button>
+    <button class="pill" data-cat="food">Alimentação</button>
+    <button class="pill" data-cat="apoio">Apoio</button>
+  </nav>
+
+  <!-- ============ FLOOR PLAN (auto-scaled + pan/zoom) ============ -->
+  <div class="scale-fit" data-w="1000" data-h="1918">
+    <div class="scale-inner map-box">
+      <div class="map-inner">
+
+        <!-- APOIO -->
+        <div class="layer" data-layer="apoio">
+          <div class="zone" data-zone="banheiro-topo" style="position:absolute;left:0%;top:0.75%;width:21.91%;height:2.87%;border-radius:8px;background:#2C2D3D;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg class="ico" width="24" height="24" style="color:#8F8FA3"><use href="#i-toilet"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1">Banheiros</span>
+          </div>
+          <div class="zone" data-zone="escada-1" style="position:absolute;left:0%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+            <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+          </div>
+          <div class="zone" data-zone="banheiro-base" style="position:absolute;left:27%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+            <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-toilet"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Banheiros</span>
+          </div>
+          <div class="zone" data-zone="escada-3" style="position:absolute;left:39.5%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+            <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+          </div>
+          <div class="zone" data-zone="chapelaria" style="position:absolute;left:52%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+            <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-coat-hanger"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Chapelaria</span>
+          </div>
+          <div class="zone" data-zone="escada-2" style="position:absolute;left:89%;top:86.95%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:9px">
+            <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
+            <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+          </div>
+          <div class="zone" data-zone="traducao-1" style="position:absolute;left:57.5%;top:18.95%;width:8.4%;height:2.39%;border-radius:6px;background:#2C2D3D;transform:rotate(270deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+            <svg class="ico" width="13" height="13" style="color:#8F8FA3"><use href="#i-headphones"/></svg>
+            <span style="font-size:10px;font-weight:500;color:#B6B6C6;line-height:1">Fones tradução</span>
+          </div>
+          <div class="zone" data-zone="traducao-2" style="position:absolute;left:21.82%;top:52.92%;width:10.4%;height:2.39%;border-radius:6px;background:#2C2D3D;display:flex;align-items:center;justify-content:center;gap:6px">
+            <svg class="ico" width="13" height="13" style="color:#8F8FA3"><use href="#i-headphones"/></svg>
+            <span style="font-size:10px;font-weight:500;color:#B6B6C6;line-height:1">Fones tradução</span>
+          </div>
+        </div>
+
+        <!-- ARENA -->
+        <div class="layer" data-layer="arena">
+          <div style="position:absolute;left:2.62%;top:4.9%;width:57.12%;height:48.02%;border-radius:14px;background:#0F1B33">
+            <div class="zone" data-zone="arena-mind" style="position:absolute;left:1.64%;top:0.9%;width:96.7%;height:5.8%;display:flex;flex-direction:column;justify-content:center;gap:5px;padding-left:4px">
+              <span style="font-size:12px;font-weight:700;color:#8CA0BE;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Arena</span>
+              <span style="font-size:30px;font-weight:900;color:#FFFFFF;letter-spacing:-0.02em;text-transform:uppercase;line-height:0.94">Mind<span style="color:#68EE95">.</span></span>
+            </div>
+            <div style="position:absolute;left:1.64%;top:7.4%;width:96.7%;height:6.6%;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center">
+              <span style="font-size:22px;font-weight:900;color:#13131A;letter-spacing:0.14em;line-height:1">PALCO</span>
+            </div>
+            <div class="zone" data-zone="prime" style="position:absolute;left:1.64%;top:15.4%;width:96.7%;height:24.4%;border-radius:8px;background:#8535E6;padding:12px;display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:15px;font-weight:700;color:rgba(19,19,26,0.62);letter-spacing:0.06em;line-height:1;text-transform:uppercase">Área Prime</span>
+              <div class="seats seats-dark"></div>
+            </div>
+            <div class="zone" data-zone="vip" style="position:absolute;left:1.64%;top:41.2%;width:96.7%;height:24.4%;border-radius:8px;background:#FF7057;padding:10px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:15px;font-weight:700;color:rgba(19,19,26,0.62);letter-spacing:0.06em;line-height:1;text-transform:uppercase">Área VIP</span>
+              <div class="seats seats-dark"></div>
+            </div>
+            <div class="zone" data-zone="mind" style="position:absolute;left:1.64%;top:67%;width:96.7%;height:31.5%;border-radius:8px;background:#68EE95;padding:10px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:15px;font-weight:700;color:rgba(19,19,26,0.62);letter-spacing:0.06em;line-height:1;text-transform:uppercase">Área Mind</span>
+              <div class="seats seats-dark"></div>
+            </div>
+          </div>
+
+          <div class="zone" data-zone="arena-topvoice" style="position:absolute;left:71.91%;top:28.47%;width:28.09%;height:13.64%;border-radius:12px;background:#0F1B33;padding:9px;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+            <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:8px;position:relative">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:12px;font-weight:700;color:#8CA0BE;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Arena</span>
+                <span style="font-size:30px;font-weight:900;color:#FFFFFF;line-height:0.94;letter-spacing:-0.02em;text-transform:uppercase">Top<br>Voice<span style="color:#68EE95">.</span></span>
+              </div>
+              <div style="border-radius:6px;background:#FFFFFF;padding:7px 0;text-align:center">
+                <span style="font-size:14px;font-weight:900;color:#13131A;letter-spacing:0.14em;line-height:1">PALCO</span>
+              </div>
+            </div>
+            <div class="seats seats-green"></div>
+          </div>
+
+          <div class="zone" data-zone="arena-sextante" style="position:absolute;left:72.38%;top:61.48%;width:27.62%;height:13.4%;border-radius:12px;background:#0F1B33;padding:9px;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+            <img src="assets/sextante-marca.png" alt="" style="position:absolute;right:-42px;bottom:-34px;width:170px;height:170px;object-fit:contain;opacity:0.13;pointer-events:none;z-index:0;display:block">
+            <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:8px;position:relative">
+              <div style="display:flex;align-items:center;gap:11px">
+                <img src="assets/sextante-marca.png" alt="Sextante" style="width:48px;height:48px;object-fit:contain;flex:0 0 auto;display:block">
+                <div style="display:flex;flex-direction:column;gap:5px">
+                  <span style="font-size:12px;font-weight:700;color:#C7A96A;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Arena</span>
+                  <span style="font-size:30px;font-weight:900;color:#D9AE2B;line-height:0.94;letter-spacing:-0.02em;text-transform:uppercase">Sextante</span>
+                </div>
+              </div>
+              <div style="border-radius:6px;background:#FFFFFF;padding:7px 0;text-align:center">
+                <span style="font-size:14px;font-weight:900;color:#13131A;letter-spacing:0.14em;line-height:1">PALCO</span>
+              </div>
+            </div>
+            <div class="seats seats-green"></div>
+          </div>
+        </div>
+
+        <!-- LOUNGE -->
+        <div class="layer" data-layer="lounge">
+          <div class="zone" data-zone="lounge-heineken" style="position:absolute;left:71.91%;top:10.2%;width:28.09%;height:3.83%;border-radius:10px;background:#E3E3ED;overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <div style="display:flex;align-items:baseline;gap:9px">
+              <span style="font-size:19px;font-weight:700;color:#13131A;line-height:1">Lounge</span>
+              <img src="assets/heineken-preto.png" alt="Heineken" style="height:22px;width:auto;display:block;flex:0 0 auto">
+            </div>
+          </div>
+          <div class="zone" data-zone="lounge-prime" style="position:absolute;left:71.91%;top:15.31%;width:28.09%;height:8.61%;border-radius:10px;background:#2A1F45;overflow:hidden;padding:14px 16px;display:flex;align-items:center;justify-content:center;gap:13px">
+            <img src="assets/simbolo-mind-roxo.png" alt="" style="width:38px;height:38px;object-fit:contain;display:block;flex:0 0 auto">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <span style="font-size:12px;font-weight:700;color:#B08CE0;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Lounge</span>
+              <span style="font-size:30px;font-weight:900;color:#FFFFFF;line-height:0.94;letter-spacing:-0.02em;text-transform:uppercase">Prime<span style="color:#9843FF">.</span></span>
+            </div>
+          </div>
+          <div class="zone" data-zone="lounge-bwg" style="position:absolute;left:71.91%;top:24.88%;width:28.09%;height:2.87%;border-radius:10px;background:#E3E3ED;overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:19px;font-weight:700;color:#13131A;line-height:1">Lounge</span>
+              <img src="assets/bwg-lockup-preto.png" alt="BWG" style="height:22px;width:auto;display:block;flex:0 0 auto">
+            </div>
+          </div>
+          <div class="zone" data-zone="coworking" style="position:absolute;left:72.85%;top:47.85%;width:15.45%;height:5.74%;border-radius:10px;background:#E3E3ED;padding:0 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center">
+            <span style="font-size:11px;font-weight:700;color:#5C6E8C;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Área</span>
+            <span style="font-size:18px;font-weight:900;color:#13131A;line-height:0.94;letter-spacing:-0.02em;text-transform:uppercase;white-space:nowrap">Coworking<span style="color:#68EE95">.</span></span>
+          </div>
+          <div class="zone" data-zone="diversidade" style="position:absolute;left:89.23%;top:47.85%;width:10.77%;height:5.74%;border-radius:10px;background:#E3E3ED;padding:0 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center">
+            <span style="font-size:11px;font-weight:700;color:#5C6E8C;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Mind</span>
+            <span style="font-size:12px;font-weight:900;color:#13131A;line-height:0.94;letter-spacing:-0.02em;text-transform:uppercase;white-space:nowrap">+Diversidade<span style="color:#68EE95">.</span></span>
+          </div>
+        </div>
+
+        <!-- STAND -->
+        <div class="layer" data-layer="stand">
+          <div class="zone" data-zone="stand-bwg" style="position:absolute;left:71.91%;top:42.82%;width:4.6%;height:3.59%;border-radius:6px;background:#E3E3ED;display:flex;align-items:center;justify-content:center">
+            <img src="assets/bwg-simbolo-preto.png" alt="BWG" style="height:32px;width:auto;object-fit:contain;display:block">
+          </div>
+          <div class="zone" data-zone="stand-bp" style="position:absolute;left:77.07%;top:42.82%;width:4.6%;height:3.59%;border-radius:6px;background:#E3E3ED;display:flex;align-items:center;justify-content:center">
+            <img src="assets/bp-preto.png" alt="Faculdade BP" style="height:32px;width:auto;object-fit:contain;display:block">
+          </div>
+          <div class="zone" data-zone="stand-chilli" style="position:absolute;left:82.23%;top:42.82%;width:4.6%;height:3.59%;border-radius:6px;background:#E3E3ED;display:flex;align-items:center;justify-content:center">
+            <img src="assets/chillibeans-preto.png" alt="Chilli Beans" style="height:38px;width:auto;object-fit:contain;display:block">
+          </div>
+          <div class="zone" data-zone="stand-3x3" style="position:absolute;left:87.39%;top:42.82%;width:4.6%;height:3.59%;border-radius:6px;background:#E3E3ED;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+            <span style="font-size:10px;font-weight:700;color:#2C2D3D;line-height:1">Stand</span>
+            <span style="font-size:10px;font-weight:500;color:#2C2D3D;line-height:1">3×3</span>
+          </div>
+          <div class="zone" data-zone="wellz" style="position:absolute;left:72.85%;top:57.42%;width:11.24%;height:3.35%;border-radius:8px;background:#E3E3ED;display:flex;align-items:center;justify-content:center;padding:9px 12px">
+            <img src="assets/wellz-preto.png" alt="Well Z" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block">
+          </div>
+          <div class="zone" data-zone="livraria" style="position:absolute;left:72.38%;top:75.36%;width:27.62%;height:5.74%;border-radius:12px;background:#E3E3ED;padding:0 18px;display:flex;align-items:center;justify-content:center;gap:14px">
+            <svg class="ico" width="34" height="34" style="color:#13131A"><use href="#i-book-open-text"/></svg>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <span style="font-size:11px;font-weight:700;color:#5C6E8C;letter-spacing:0.24em;text-transform:uppercase;line-height:1">Livraria</span>
+              <span style="font-size:24px;font-weight:900;color:#13131A;line-height:0.94;letter-spacing:-0.02em;text-transform:uppercase;white-space:nowrap">Da Villa<span style="color:#68EE95">.</span></span>
+            </div>
+          </div>
+          <div class="zone" data-zone="stand-vale" style="position:absolute;left:36.8%;top:61.72%;width:12.17%;height:4.78%;border-radius:8px;background:#E3E3ED;display:flex;align-items:center;justify-content:center;padding:9px">
+            <img src="assets/vale-preto.png" alt="Vale" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block">
+          </div>
+          <div class="zone" data-zone="stand-heineken" style="position:absolute;left:53.18%;top:61.72%;width:12.17%;height:4.78%;border-radius:8px;background:#E3E3ED;display:flex;align-items:center;justify-content:center;padding:11px 14px">
+            <img src="assets/heineken-preto.png" alt="Heineken" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block">
+          </div>
+          <div class="zone" data-zone="stand-livre" style="position:absolute;left:36.8%;top:68.9%;width:12.17%;height:4.78%;border-radius:8px;background:#E3E3ED;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+            <span style="font-size:14px;font-weight:700;color:#2C2D3D;line-height:1">Stand</span>
+            <span style="font-size:11px;font-weight:500;color:#2C2D3D;line-height:1">8×5</span>
+          </div>
+          <div class="zone" data-zone="stand-natura" style="position:absolute;left:53.18%;top:68.9%;width:12.17%;height:4.78%;border-radius:8px;background:#E3E3ED;display:flex;align-items:center;justify-content:center;padding:10px">
+            <img src="assets/natura-preto.png" alt="Natura" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block">
+          </div>
+        </div>
+
+        <!-- FOOD -->
+        <div class="layer" data-layer="food">
+          <!-- praça: only the painted L is clickable; the transparent notch lets clicks reach the central stands beneath -->
+          <div data-zone="praca" style="position:absolute;left:0.28%;top:61.24%;width:51.49%;height:22.5%">
+            <div class="praca-hit" style="position:absolute;left:0;top:0;width:57.27%;height:100%;background:#FBF4D0;border-radius:10px"></div>
+            <div class="praca-hit" style="position:absolute;left:0;top:85%;width:100%;height:15%;background:#FBF4D0;border-radius:10px"></div>
+            <div style="position:absolute;left:0;top:0;width:57.27%;height:85%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:14px 10px;text-align:center;pointer-events:none">
+              <svg class="ico" width="40" height="40" style="color:#13131A"><use href="#i-fork-knife"/></svg>
+              <span style="font-size:26px;font-weight:900;color:#13131A;line-height:1.05;letter-spacing:-0.01em;text-transform:uppercase">Praça de Alimentação</span>
+              <span style="font-size:13px;font-weight:700;color:rgba(19,19,26,0.6);letter-spacing:0.12em;text-transform:uppercase">Food court</span>
+            </div>
+            <div style="position:absolute;left:57.27%;top:calc(85% - 16px);width:16px;height:16px;background:#FBF4D0"></div>
+            <div style="position:absolute;left:57.27%;top:calc(85% - 16px);width:16px;height:16px;background:#13131A;border-bottom-left-radius:16px"></div>
+            <div style="position:absolute;left:57.27%;top:85%;width:42.73%;height:15%;display:flex;align-items:center;justify-content:flex-start;gap:9px;padding:0 10px;pointer-events:none">
+              <svg class="ico" width="20" height="20" style="color:#13131A"><use href="#i-storefront"/></svg>
+              <span style="font-size:14px;font-weight:700;color:#13131A;line-height:1;white-space:nowrap">Barracas de alimentação</span>
+            </div>
+            <svg class="praca-outline" viewBox="0 0 494.3 422.55" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M10,-3 H273.09 A13,13 0 0 1 286.09,10 V356.17 H484.3 A13,13 0 0 1 497.3,369.17 V412.55 A13,13 0 0 1 484.3,425.55 H10 A13,13 0 0 1 -3,412.55 V10 A13,13 0 0 1 10,-3 Z"/>
+            </svg>
+          </div>
+          <div class="zone" data-zone="barracas" style="position:absolute;left:92.51%;top:44.5%;width:7.49%;height:2.7%;border-radius:8px;background:#FBF4D0;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <svg class="ico" width="24" height="24" style="color:#13131A"><use href="#i-storefront"/></svg>
+          </div>
+          <div class="zone" data-zone="barracas" style="position:absolute;left:85.49%;top:58.37%;width:7.02%;height:2.63%;border-radius:8px;background:#FBF4D0;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <svg class="ico" width="24" height="24" style="color:#13131A"><use href="#i-storefront"/></svg>
+          </div>
+        </div>
+
+        <!-- FIXED: credenciamento + entrada/saída -->
+        <div class="zone" data-zone="credenciamento" style="position:absolute;left:64%;top:91.2%;width:24%;height:3.35%;border-radius:10px;background:#FFFFFF;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:12px">
+          <svg class="ico" width="22" height="22" style="color:#13131A"><use href="#i-identification-badge"/></svg>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:15px;font-weight:900;color:#13131A;letter-spacing:0.02em;line-height:1;white-space:nowrap">CREDENCIAMENTO</span>
+            <span style="font-size:12px;font-weight:500;color:#4A4A5A;line-height:1;white-space:nowrap">Prime / Patrocinador · Mind / VIP</span>
+          </div>
+        </div>
+
+        <div style="position:absolute;left:64%;top:95.9%;width:24%;height:2.7%;border-radius:8px;background:#2C2D3D;display:flex;overflow:hidden">
+          <div class="zone" data-zone="saida" style="flex:1 1 0;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg class="ico" width="19" height="19" style="color:#FFFFFF"><use href="#i-sign-out"/></svg>
+            <span style="font-size:13px;font-weight:900;color:#FFFFFF;letter-spacing:0.06em">SAÍDA</span>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.16);flex:0 0 auto"></div>
+          <div class="zone" data-zone="entrada" style="flex:1 1 0;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg class="ico" width="19" height="19" style="color:#FFFFFF"><use href="#i-sign-in"/></svg>
+            <span style="font-size:13px;font-weight:900;color:#FFFFFF;letter-spacing:0.06em">ENTRADA</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="map-hint">
+      <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
+      Arraste para mover · dois dedos ou toque duplo para zoom
+    </div>
+  </div>
+
+  <!-- ============ 2ND FLOOR ============ -->
+  <div class="floor2-wrap pad">
+    <div class="zone floor2" data-zone="segundo-andar">
+      <div class="floor2-head">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span class="floor2-eyebrow">2º andar · Upper floor</span>
+          <span class="floor2-title">Centro de<br>Convenções</span>
+        </div>
+        <div class="floor2-tip">
+          <svg class="ico"><use href="#i-steps"/></svg>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span class="l1">Suba pelas escadas ao lado do credenciamento</span>
+            <span class="l2">Take the stairs next to check-in</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor2-scroll">
+        <div class="floor2-diagram">
+          <div class="rooms">
+            <div class="room" style="flex:749 1 0;min-width:28px"><div class="room-empty"><span class="n">211</span></div></div>
+            <div class="room" style="flex:264 1 0;min-width:90px"><div class="room-split"><div><span class="n">210</span><span class="s">C</span></div><div><span class="n">210</span><span class="s">B</span></div><div><span class="n">210</span><span class="s">A</span></div></div></div>
+            <div class="room" style="flex:88 1 0;min-width:28px"><div class="room-empty"><span class="n">209</span></div></div>
+            <div class="room" style="flex:238 1 0;min-width:70px"><div class="room-named"><span class="t">Workshop<br>VIP 3</span><span class="c">208 C · D</span></div></div>
+            <div class="room" style="flex:238 1 0;min-width:70px"><div class="room-named"><span class="t">Workshop<br>VIP 2</span><span class="c">208 A · B</span></div></div>
+            <div class="room" style="flex:175 1 0;min-width:70px"><div class="room-named"><span class="t">Sala<br>Mind 2</span><span class="c">Sala 207</span></div></div>
+            <div class="room" style="flex:366 1 0;min-width:86px"><div class="room-named"><span class="t">Masterclass<br>Prime</span><span class="c">206 A · B · C</span></div></div>
+            <div class="room" style="flex:99 1 0;min-width:70px"><div class="room-named"><span class="t">Sala<br>Mind 1</span><span class="c">Sala 205</span></div></div>
+            <div class="room" style="flex:264 1 0;min-width:70px"><div class="room-named"><span class="t">Workshop<br>VIP 1</span><span class="c">204 A · B · C</span></div></div>
+            <div class="room" style="flex:490 1 0;min-width:121px"><div class="room-split"><div><span class="n">203</span><span class="s">D</span></div><div><span class="n">203</span><span class="s">C</span></div><div><span class="n">203</span><span class="s">B</span></div><div><span class="n">203</span><span class="s">A</span></div></div></div>
+            <div class="room" style="flex:88 1 0;min-width:28px"><div class="room-empty"><span class="n">202</span></div></div>
+            <div class="room" style="flex:88 1 0;min-width:28px"><div class="room-empty"><span class="n">201</span></div></div>
+          </div>
+          <div class="corridor">
+            <div class="corridor-main">
+              <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
+              <span class="a">Corredor principal</span>
+              <span class="b">acesso a todas as salas</span>
+            </div>
+            <div class="corridor-stairs">
+              <svg class="ico"><use href="#i-steps"/></svg>
+              <span>Escadas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor2-key">
+        <span class="sw"></span><span>Salas do Mind Summit</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LEGENDS ============ -->
+  <div class="legends pad">
+    <div class="legend-col">
+      <div class="legend-eyebrow">Seu assento na Arena Mind</div>
+      <div class="seat-list">
+        <div class="seat-row"><span class="chip" style="background:#8535E6"></span><span><strong style="font-weight:700">Prime</strong></span></div>
+        <div class="seat-row"><span class="chip" style="background:#FF7057"></span><span><strong style="font-weight:700">VIP</strong></span></div>
+        <div class="seat-row"><span class="chip" style="background:#68EE95"></span><span><strong style="font-weight:700">Mind</strong></span></div>
+      </div>
+    </div>
+
+    <div class="legend-col">
+      <div class="legend-eyebrow">Legenda · Key</div>
+      <div class="key-grid">
+        <div class="key-row"><span class="sw" style="background:#FFFFFF"></span><span>Palcos e credenciamento</span></div>
+        <div class="key-row"><span class="sw" style="background:#E3E3ED"></span><span>Estandes · Booths</span></div>
+        <div class="key-row"><span class="sw pill-sw" style="background:#E3E3ED"></span><span>Lounges e áreas de estar</span></div>
+        <div class="key-row"><span class="sw" style="background:#FBF4D0"></span><span>Alimentação · Food</span></div>
+        <div class="key-row"><span class="sw" style="background:#2C2D3D"></span><span>Apoio, WC, escadas e saída</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTNOTE ============ -->
+  <div class="footnote pad">
+    <div class="a">Não perca o caminho.</div>
+    <div class="b">Clique em qualquer área do mapa para ver os detalhes. A equipe Mind está à disposição para ajudar.</div>
+  </div>
+</main>
+
+<!-- ============ BOTTOM SHEET ============ -->
+<div class="sheet-host" id="sheet-host">
+  <div class="sheet-overlay" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-grab"></div>
+    <div class="sheet-kind" id="sheet-kind"></div>
+    <div class="sheet-titles">
+      <div class="sheet-title" id="sheet-title"></div>
+      <div class="sheet-title-en" id="sheet-title-en"></div>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+    <button class="btn-close" data-close>Fechar</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Design handoff source bundle (prototype, not the deliverable)
+/handoff/
+
+# Local agent / editor config
+/.claude/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
