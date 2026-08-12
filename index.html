@@ -71,6 +71,15 @@
     <button class="pill" data-cat="apoio">Apoio</button>
   </nav>
 
+  <!-- ============ 2ND-FLOOR TOGGLE ============ -->
+  <div class="floor-toggle pad reveal">
+    <label class="switch">
+      <input type="checkbox" class="floor2-switch">
+      <span class="switch-track"><span class="switch-knob"></span></span>
+      <span class="switch-text">Mostrar 2º andar</span>
+    </label>
+  </div>
+
   <!-- ============ FLOOR PLAN (auto-scaled + pan/zoom) ============ -->
   <div class="scale-fit" data-w="1000" data-h="1918">
     <div class="scale-inner map-box">
@@ -297,6 +306,58 @@
         </div>
 
       </div>
+
+      <!-- ===== 2ND FLOOR OVERLAY (toggled; rises up out of the ground floor) ===== -->
+      <div class="floor2-overlay" aria-hidden="true">
+        <div class="f2-scrim"></div>
+        <div class="f2-content">
+        <div class="f2-panel"></div>
+        <div class="f2-title">
+          <span class="f2-eyebrow">2º andar · Upper floor</span>
+          <span class="f2-name">Centro de Convenções</span>
+        </div>
+        <div class="f2-rooms">
+          <div class="rooms">
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8F8FA3"><use href="#i-restroom"/></svg></div></div>
+            <div class="room zone" data-zone="sala-vip3" style="flex:238 1 0;min-width:78px"><div class="room-named"><span class="t">Workshop<br>VIP 3</span><span class="c">208 C · D</span></div></div>
+            <div class="room zone" data-zone="sala-vip2" style="flex:238 1 0;min-width:78px"><div class="room-named"><span class="t">Workshop<br>VIP 2</span><span class="c">208 A · B</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8F8FA3"><use href="#i-restroom"/></svg></div></div>
+            <div class="room zone" data-zone="sala-mind2" style="flex:175 1 0;min-width:72px"><div class="room-named"><span class="t">Sala<br>Mind 2</span><span class="c">Sala 207</span></div></div>
+            <div class="room zone" data-zone="sala-master" style="flex:366 1 0;min-width:92px"><div class="room-named"><span class="t">Masterclass<br>Prime</span><span class="c">206 A · B · C</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8F8FA3"><use href="#i-restroom"/></svg></div></div>
+            <div class="room zone" data-zone="sala-mind1" style="flex:99 1 0;min-width:72px"><div class="room-named"><span class="t">Sala<br>Mind 1</span><span class="c">Sala 205</span></div></div>
+            <div class="room zone" data-zone="sala-vip1" style="flex:264 1 0;min-width:80px"><div class="room-named"><span class="t">Workshop<br>VIP 1</span><span class="c">204 A · B · C</span></div></div>
+            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8F8FA3"><use href="#i-restroom"/></svg></div></div>
+          </div>
+        </div>
+        <!-- circulation: stacked exactly over the ground-floor elevators & stairs -->
+        <div class="zone f2-cell" data-zone="elevador-1" style="position:absolute;left:0%;top:85.15%;width:11%;height:2.85%;border-radius:8px;background:#2C2D3D;padding:0 8px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px">
+          <svg class="ico" width="19" height="19" style="color:#8F8FA3"><use href="#i-elevator"/></svg>
+          <span style="font-size:12px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Elevador</span>
+        </div>
+        <div class="zone f2-cell" data-zone="elevador-2" style="position:absolute;left:89%;top:85.15%;width:11%;height:2.85%;border-radius:8px;background:#2C2D3D;padding:0 8px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px">
+          <svg class="ico" width="19" height="19" style="color:#8F8FA3"><use href="#i-elevator"/></svg>
+          <span style="font-size:12px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Elevador</span>
+        </div>
+        <div class="zone f2-cell" data-zone="escada-2andar" style="position:absolute;left:0%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:9px">
+          <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
+          <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+        </div>
+        <div class="zone f2-cell f2-mid" data-zone="escada-2andar" style="position:absolute;left:39.5%;top:85.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:9px">
+          <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
+          <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+        </div>
+        <div class="zone f2-cell f2-rise" data-zone="corredor-2andar" style="position:absolute;left:2%;top:81.8%;width:96%;height:2.9%;border-radius:8px;background:#2C2D3D;padding:0 18px;box-sizing:border-box;display:flex;align-items:center;gap:11px">
+          <svg class="ico" width="20" height="20" style="color:#8CA0BE"><use href="#i-arrows-out-line-horizontal"/></svg>
+          <span style="font-size:14px;font-weight:700;color:#FFFFFF;line-height:1">Corredor principal</span>
+          <span style="font-size:12px;font-weight:500;color:#8CA0BE;line-height:1">acesso a todas as salas</span>
+        </div>
+        <div class="zone f2-cell" data-zone="escada-2andar" style="position:absolute;left:89%;top:88.15%;width:11%;height:3.35%;border-radius:8px;background:#2C2D3D;padding:0 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:9px">
+          <svg class="ico" width="20" height="20" style="color:#8F8FA3"><use href="#i-steps"/></svg>
+          <span style="font-size:13px;font-weight:700;color:#E3E3ED;line-height:1;white-space:nowrap">Escadas</span>
+        </div>
+        </div>
+      </div>
     </div>
     <div class="map-hint">
       <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
@@ -304,55 +365,13 @@
     </div>
   </div>
 
-  <!-- ============ 2ND FLOOR ============ -->
-  <div class="floor2-wrap pad reveal">
-    <div class="floor2" data-zone="segundo-andar">
-      <div class="floor2-head">
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <span class="floor2-eyebrow">2º andar · Upper floor</span>
-          <span class="floor2-title">Centro de<br>Convenções</span>
-        </div>
-        <div class="floor2-tip">
-          <svg class="ico"><use href="#i-steps"/></svg>
-          <div style="display:flex;flex-direction:column;gap:3px">
-            <span class="l1">Suba pelas escadas ao lado do credenciamento</span>
-            <span class="l2">Take the stairs next to check-in</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="floor2-scroll">
-        <div class="floor2-diagram">
-          <div class="rooms">
-            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
-            <div class="room zone" data-zone="sala-vip3" style="flex:238 1 0;min-width:78px"><div class="room-named"><span class="t">Workshop<br>VIP 3</span><span class="c">208 C · D</span></div></div>
-            <div class="room zone" data-zone="sala-vip2" style="flex:238 1 0;min-width:78px"><div class="room-named"><span class="t">Workshop<br>VIP 2</span><span class="c">208 A · B</span></div></div>
-            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
-            <div class="room zone" data-zone="sala-mind2" style="flex:175 1 0;min-width:72px"><div class="room-named"><span class="t">Sala<br>Mind 2</span><span class="c">Sala 207</span></div></div>
-            <div class="room zone" data-zone="sala-master" style="flex:366 1 0;min-width:92px"><div class="room-named"><span class="t">Masterclass<br>Prime</span><span class="c">206 A · B · C</span></div></div>
-            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
-            <div class="room zone" data-zone="sala-mind1" style="flex:99 1 0;min-width:72px"><div class="room-named"><span class="t">Sala<br>Mind 1</span><span class="c">Sala 205</span></div></div>
-            <div class="room zone" data-zone="sala-vip1" style="flex:264 1 0;min-width:80px"><div class="room-named"><span class="t">Workshop<br>VIP 1</span><span class="c">204 A · B · C</span></div></div>
-            <div class="room room-wc zone" data-zone="wc-2andar" style="flex:60 1 0;min-width:30px"><div class="wc-cell"><svg class="ico" width="22" height="22" style="color:#8CA0BE"><use href="#i-restroom"/></svg></div></div>
-          </div>
-          <div class="corridor">
-            <div class="corridor-main zone" data-zone="corredor-2andar">
-              <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
-              <span class="a">Corredor principal</span>
-              <span class="b">acesso a todas as salas</span>
-            </div>
-            <div class="corridor-stairs zone" data-zone="escada-2andar">
-              <svg class="ico"><use href="#i-steps"/></svg>
-              <span>Escadas</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="floor2-key">
-        <span class="sw"></span><span>Salas do Mind Summit</span>
-      </div>
-    </div>
+  <!-- ============ 2ND-FLOOR TOGGLE (bottom) ============ -->
+  <div class="floor-toggle floor-toggle-bottom pad reveal">
+    <label class="switch">
+      <input type="checkbox" class="floor2-switch">
+      <span class="switch-track"><span class="switch-knob"></span></span>
+      <span class="switch-text">Mostrar 2º andar</span>
+    </label>
   </div>
 
   <!-- ============ LEGENDS ============ -->

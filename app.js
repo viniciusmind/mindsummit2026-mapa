@@ -285,20 +285,27 @@
       setTimeout(function () { mapInner.classList.remove('anim'); }, maxDelay + 1250); // cleanup
     }
 
-    // 2nd floor: after the rooms finish assembling, ring every button once, together
+    // 2nd-floor overlay: header switch shows/hides it (blurring the ground floor);
+    // ring its buttons once, the first time it's revealed
+    var switches = [].slice.call(document.querySelectorAll('.floor2-switch'));
     var floor2Pulsed = false;
-    function pulseFloor2() {
-      if (floor2Pulsed || reduce) return;
-      floor2Pulsed = true;
-      setTimeout(function () {
-        [].forEach.call(document.querySelectorAll('.floor2 .zone'), function (z) { z.classList.add('pulse-once'); });
-      }, 1900);
-    }
+    switches.forEach(function (sw) {
+      sw.addEventListener('change', function () {
+        var on = sw.checked;
+        mapRoot.classList.toggle('show-floor2', on);
+        switches.forEach(function (o) { if (o !== sw) o.checked = on; }); // keep both toggles in sync
+        if (on && !floor2Pulsed && !reduce) {
+          floor2Pulsed = true;
+          setTimeout(function () {
+            [].forEach.call(document.querySelectorAll('.floor2-overlay .zone'), function (z) { z.classList.add('pulse-once'); });
+          }, 1100);
+        }
+      });
+    });
 
     function trigger(el) {
       el.classList.add('in');
       if (el.classList.contains('scale-fit')) fillMap();
-      if (el.classList.contains('floor2-wrap')) pulseFloor2();
     }
 
     var els = [].slice.call(document.querySelectorAll('.reveal, .scale-fit'));

@@ -220,7 +220,7 @@ a:hover{color:var(--light)}
 .room-named{width:100%;height:100%;border-radius:5px;background:var(--cinza-100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;text-align:center}
 .room-named .t{font-size:11px;font-weight:900;color:var(--neutral-dark);line-height:1.15;letter-spacing:-0.01em}
 .room-named .c{font-size:9px;font-weight:700;color:#4A4A5A;line-height:1;letter-spacing:0.03em}
-.wc-cell{width:100%;height:100%;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(140,160,190,0.28);display:flex;align-items:center;justify-content:center}
+.wc-cell{width:100%;height:100%;border-radius:6px;background:#2C2D3D;display:flex;align-items:center;justify-content:center}
 .corridor{display:flex;gap:5px;height:38px}
 .corridor-main{flex:1;border-radius:5px;background:var(--cinza-300);display:flex;align-items:center;padding:0 16px;gap:10px}
 .corridor-main .ico{width:18px;height:18px;color:#8CA0BE}
@@ -371,4 +371,92 @@ a:hover{color:var(--light)}
   .js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .btn-close{opacity:1;transform:none;transition:none}
   .js .glow{animation:none}
   .map-root:not([data-filter="all"]) .layer{transform:none}   /* keep the dim, drop the movement */
+}
+
+/* ============================================================
+   2ND-FLOOR TOGGLE + OVERLAY  (X-ray of the upper floor)
+   ============================================================ */
+
+/* ---- header switch ---- */
+.floor-toggle{padding-top:2px;padding-bottom:18px}
+.switch{display:inline-flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.switch input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.switch-track{position:relative;flex:0 0 auto;width:62px;height:34px;border-radius:100px;background:rgba(255,255,255,0.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.2);transition:background var(--dur-fast) var(--ease-out)}
+.switch-knob{position:absolute;top:4px;left:4px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform var(--dur-base) var(--ease-out)}
+.switch input:checked + .switch-track{background:var(--verde);box-shadow:none}
+.switch input:checked + .switch-track .switch-knob{transform:translateX(28px)}
+.switch input:focus-visible + .switch-track{outline:2px solid var(--verde);outline-offset:2px}
+.switch-text{font-size:17px;font-weight:700;color:#E3E3ED}
+
+/* ---- ground floor blurs away when the upper floor is shown ---- */
+.map-inner{transition:filter var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .map-inner{filter:blur(6px) brightness(0.45)}
+
+/* ---- overlay = a visibility/clip container (same box as .map-inner) ---- */
+.floor2-overlay{
+  position:absolute;left:20px;top:10px;width:960px;height:1878px;z-index:2;
+  visibility:hidden;pointer-events:none;
+  transition:visibility var(--dur-base);
+}
+.map-root.show-floor2 .floor2-overlay{visibility:visible;pointer-events:auto}
+
+/* dark wash over the blurred ground floor */
+/* scrim = a light translucent wash over the WHOLE (blurred) map — the "rest" */
+.f2-scrim{position:absolute;top:-10px;left:-20px;width:1000px;height:1918px;background:rgba(0,0,0,0.42);opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .f2-scrim{opacity:1}
+
+/* black panel ONLY behind the 2nd-floor content band (full map width) */
+.f2-panel{position:absolute;left:-20px;width:1000px;top:54%;height:40%;background:rgba(0,0,0,0.92);opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .f2-panel{opacity:1}
+
+/* stairs & elevators stay put (right over the ground floor's); only the corridor
+   and rooms emerge ABOVE them, so the 2nd floor reads as the ground extended upward */
+.f2-content{position:absolute;inset:0}
+.floor-toggle-bottom{padding-top:22px;padding-bottom:8px}
+
+/* corridor rises up above the (fixed) stairs when shown */
+.f2-rise{transform:translateY(26px);transition:transform var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .f2-rise{transform:none;transition-delay:.14s}
+
+/* middle stair only: on the 2nd floor it lifts to the elevator level (85.15%),
+   then drops back to the stairs level (88.15%) on the ground (translateY 56px ≈ 3%) */
+.f2-mid{transform:translateY(56px);transition:transform var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .f2-mid{transform:none}
+
+.f2-title{position:absolute;left:2%;top:58%;display:flex;flex-direction:column;gap:7px;pointer-events:none;opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .f2-title{opacity:1;transition-delay:.12s}
+.f2-eyebrow{font-size:14px;font-weight:700;color:#8CA0BE;letter-spacing:0.24em;text-transform:uppercase;line-height:1}
+.f2-name{font-size:34px;font-weight:900;color:#FFFFFF;letter-spacing:-0.02em;text-transform:uppercase;line-height:0.95}
+
+.f2-rooms{position:absolute;left:2%;top:66.5%;width:96%;height:15%}
+.f2-rooms .rooms{height:100%;gap:6px}
+
+/* bigger, readable labels inside the overlay */
+.floor2-overlay .room-named .t{font-size:16px;line-height:1.12}
+.floor2-overlay .room-named .c{font-size:10px}
+.floor2-overlay .wc-cell .ico{width:32px;height:32px}
+
+/* circulation cells fade in (they physically travel up via .f2-content) */
+.f2-cell{opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
+.map-root.show-floor2 .f2-cell{opacity:1;transition-delay:.18s}
+
+/* rooms emerge above the corridor with a gentle left→right stagger */
+.floor2-overlay .room{opacity:0;transform:translateY(24px);transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
+.map-root.show-floor2 .floor2-overlay .room{opacity:1;transform:none}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(1){transition-delay:.26s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(2){transition-delay:.30s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(3){transition-delay:.34s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(4){transition-delay:.38s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(5){transition-delay:.42s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(6){transition-delay:.46s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(7){transition-delay:.50s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(8){transition-delay:.54s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(9){transition-delay:.58s}
+.map-root.show-floor2 .floor2-overlay .room:nth-child(10){transition-delay:.62s}
+
+@media (prefers-reduced-motion: reduce){
+  .map-root.show-floor2 .map-inner{filter:brightness(0.5)}
+  .f2-scrim,.f2-panel,.f2-title,.f2-cell,.f2-rise,.floor2-overlay .room{transition:none}
+  .f2-rise,.floor2-overlay .room{transform:none}
+  .f2-panel,.f2-title,.f2-cell,.floor2-overlay .room{opacity:1}
 }
