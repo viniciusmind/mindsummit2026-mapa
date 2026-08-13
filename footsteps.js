@@ -1,83 +1,152 @@
 /* ============================================================
    Mind Summit 2026 — Pegadas animadas nos corredores do mapa
-   Cada trilha é uma polilinha em % (0–100) do mapa 1000×1918.
+   Cada trilha é uma polilinha em % (0–100) do mapa (map-inner).
    As pegadas são a PRIMEIRA camada do mapa, então qualquer
    pegada que encoste num bloco some atrás dele (nunca bagunça).
+
+   NOVO: as rotas mudam com o filtro ativo (data-filter no .map-root).
+   "all" usa as rotas padrão; cada categoria aponta pras suas zonas.
+   Edite os pontos [x%, y%] à vontade pra calibrar.
    ============================================================ */
 (function () {
-  // trilhas nos corredores livres — ajuste os pontos se quiser
-  var TRAILS = [
+  var W = 1000, H = 1918;
+  var SPACING = 48;   // distância (px) entre pegadas ao longo da trilha
+  var STANCE = 8.5;   // meia-distância entre pé esquerdo e direito
+
+  // rotas padrão (filtro "Tudo") — corredores gerais
+  var DEFAULT = [
     { pts: [[67.5, 11], [67.5, 79]], dur: 8.5 },              // corredor vertical central (desce)
     { pts: [[6, 57.4], [58, 57.4]], dur: 7.5, phase: 1.2 },   // corredor horizontal do meio (direita)
     { pts: [[76, 96], [76, 83]], dur: 5.5, phase: 0.6 },      // entrada -> credenciamento (sobe)
     { pts: [[25, 3], [59, 3]], dur: 7, phase: 2.1 },          // faixa superior (direita)
-    { pts: [[53, 79.5], [67, 79.5]], dur: 6, phase: 1.6 },    // baixo-centro, rumo à Sextante (direita)
-    { pts: [[33, 61.5], [33, 79.5]], dur: 6.5, phase: 0.9 },  // entre a praça e os estandes centrais (desce)
-    { pts: [[13, 85.9], [64, 85.9]], dur: 7.2, phase: 3.0 }   // barracas <-> banheiros/escadas/chapelaria (direita)
+    { pts: [[53, 79.5], [67, 79.5]], dur: 6, phase: 1.6 },    // baixo-centro, rumo à Sextante
+    { pts: [[33, 61.5], [33, 79.5]], dur: 6.5, phase: 0.9 },  // entre a praça e os estandes centrais
+    { pts: [[13, 85.9], [64, 85.9]], dur: 7.2, phase: 3.0 }   // barracas <-> banheiros/escadas/chapelaria
   ];
 
-  var W = 1000, H = 1918;
-  var SPACING = 48;   // distância (px nativos) entre pegadas ao longo da trilha
-  var STANCE = 8.5;   // meia-distância entre pé esquerdo e direito
+  // rotas por categoria — as pegadas fluem em direção às zonas daquele filtro
+  var SETS = {
+    all: DEFAULT,
 
-  function build() {
-    var mapInner = document.querySelector('.map-inner');
-    if (!mapInner) return;
-    if (mapInner.querySelector('.footsteps')) return; // idempotente
+    // ARENAS: vêm de longe (entrada/bordas) e fluem até as arenas
+    arena: [
+      { pts: [[76, 96], [76, 84], [68, 84], [68, 36], [71.6, 35.5]], dur: 9, phase: 0.4 },  // entrada -> Top Voice
+      { pts: [[68, 79], [68, 26], [61, 25]], dur: 7.5, phase: 1.4 },                          // corredor central -> Arena Mind
+      { pts: [[58, 57.4], [8, 57.4], [8, 53.4]], dur: 7, phase: 2.2 },                        // vem da esquerda -> Arena Mind (por baixo)
+      { pts: [[53, 79.5], [68, 79.5], [68, 69], [71.9, 68]], dur: 7, phase: 1.0 }             // vem de baixo -> Sextante
+    ],
 
-    var box = document.createElement('div');
-    box.className = 'footsteps';
-    box.setAttribute('aria-hidden', 'true');
+    // ESTANDES: vêm da entrada, da esquerda e do banheiro até os stands
+    stand: [
+      { pts: [[76, 96], [76, 84], [68, 84], [68, 45], [71.7, 44.5]], dur: 9, phase: 0.5 },   // entrada -> estandes da direita
+      { pts: [[6, 57.4], [42, 57.4], [42, 61.6]], dur: 7.5, phase: 1.6 },                     // esquerda -> estandes centrais
+      { pts: [[68, 72], [68, 59], [72.6, 59]], dur: 6, phase: 0.9 },                          // corredor central -> Well Z
+      { pts: [[28, 65], [36.6, 65]], dur: 4, phase: 2.3 },                                    // lateral -> stand central
+      { pts: [[32, 88], [32, 84], [32, 66], [36.6, 65]], dur: 7, phase: 3.1 }                 // banheiro (base) -> sobe -> estandes
+    ],
 
-    TRAILS.forEach(function (trail) {
-      var pts = trail.pts.map(function (p) { return { x: p[0] / 100 * W, y: p[1] / 100 * H }; });
-      var segs = [], total = 0;
-      for (var i = 0; i < pts.length - 1; i++) {
-        var a = pts[i], b = pts[i + 1];
-        var len = Math.hypot(b.x - a.x, b.y - a.y);
-        segs.push({ a: a, b: b, len: len, acc: total });
-        total += len;
+    // LOUNGES: vêm de longe (entrada, esquerda e banheiros) até os lounges + BWG
+    lounge: [
+      { pts: [[76, 96], [76, 84], [68, 84], [68, 14], [71.6, 12.5]], dur: 9.5, phase: 0.4 },     // entrada -> Lounge Heineken
+      { pts: [[68, 55], [68, 19], [71.6, 19]], dur: 7, phase: 1.6 },                              // central sobe -> Lounge Prime
+      { pts: [[6, 57.4], [62, 57.4], [68, 52], [72.5, 50]], dur: 8, phase: 2.4 },                 // esquerda -> Coworking
+      { pts: [[68, 60], [68, 26], [71.6, 26]], dur: 7, phase: 3.0 },                              // central -> Lounge BWG (vira)
+      { pts: [[15, 4], [62, 4], [68, 10], [68, 19], [71.6, 19]], dur: 8.5, phase: 1.2 },          // banheiro do topo -> Lounge Prime
+      { pts: [[32, 88], [32, 85.9], [68, 85.9], [68, 13], [71.6, 12.5]], dur: 10.5, phase: 2.8 }  // banheiro de baixo -> sobe -> Heineken
+    ],
+
+    // ALIMENTAÇÃO: vêm de longe convergindo pra Praça e barracas
+    food: [
+      { pts: [[76, 96], [76, 85.9], [13, 85.9], [13, 66]], dur: 9, phase: 0.5 },              // entrada -> corredor -> Praça
+      { pts: [[58, 57.4], [14, 57.4], [14, 61.4]], dur: 7, phase: 1.8 },                       // direita -> desce na Praça
+      { pts: [[50, 79], [30, 79], [30, 80.6]], dur: 5.5, phase: 1.0 },                         // -> barracas da praça (por cima)
+      { pts: [[76, 84], [68, 84], [68, 82], [52.5, 82]], dur: 6.5, phase: 2.5 },               // -> barracas da praça (pela direita)
+      { pts: [[88, 54], [88, 58.2]], dur: 3.5, phase: 1.2 }                                    // -> barraca-loja da direita
+    ],
+
+    // APOIO: vêm de longe até banheiros, escadas, chapelaria, topo
+    apoio: [
+      { pts: [[76, 96], [76, 85.9], [57, 85.9], [57, 88.1]], dur: 8, phase: 0.5 },            // entrada -> chapelaria
+      { pts: [[64, 85.9], [13, 85.9]], dur: 8, phase: 2.0 },                                   // corredor de apoio (esquerda)
+      { pts: [[45, 85.9], [45, 88.1]], dur: 3.5, phase: 1.0 },                                 // -> escadas
+      { pts: [[32, 85.9], [32, 88.1]], dur: 3.5, phase: 1.6 },                                 // -> banheiros
+      { pts: [[68, 72], [68, 8], [60, 4], [22.5, 3]], dur: 9.5, phase: 2.6 }                   // contorna a Arena Mind -> banheiro do topo (final)
+    ]
+  };
+
+  function buildTrail(box, trail) {
+    var pts = trail.pts.map(function (p) { return { x: p[0] / 100 * W, y: p[1] / 100 * H }; });
+    var segs = [], total = 0;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var a = pts[i], b = pts[i + 1];
+      var len = Math.hypot(b.x - a.x, b.y - a.y);
+      segs.push({ a: a, b: b, len: len, acc: total });
+      total += len;
+    }
+    if (total <= 0) return;
+    var n = Math.floor(total / SPACING);
+    var dur = trail.dur || 7;
+    var phase = trail.phase || 0;
+
+    for (var k = 0; k <= n; k++) {
+      var d = k * SPACING, s = segs[0];
+      for (var j = 0; j < segs.length; j++) {
+        s = segs[j];
+        if (d <= s.acc + s.len) break;
       }
-      if (total <= 0) return;
-      var n = Math.floor(total / SPACING);
-      var dur = trail.dur || 7;
-      var phase = trail.phase || 0;
+      var t = s.len ? (d - s.acc) / s.len : 0;
+      var x = s.a.x + (s.b.x - s.a.x) * t;
+      var y = s.a.y + (s.b.y - s.a.y) * t;
+      var ang = Math.atan2(s.b.y - s.a.y, s.b.x - s.a.x);
+      var side = (k % 2 === 0) ? 1 : -1;
+      var ox = Math.cos(ang + Math.PI / 2) * STANCE * side;
+      var oy = Math.sin(ang + Math.PI / 2) * STANCE * side;
+      var fx = x + ox, fy = y + oy;
+      var deg = ang * 180 / Math.PI + 90;
 
-      for (var k = 0; k <= n; k++) {
-        var d = k * SPACING, s = segs[0];
-        for (var j = 0; j < segs.length; j++) {
-          s = segs[j];
-          if (d <= s.acc + s.len) break;
-        }
-        var t = s.len ? (d - s.acc) / s.len : 0;
-        var x = s.a.x + (s.b.x - s.a.x) * t;
-        var y = s.a.y + (s.b.y - s.a.y) * t;
-        var ang = Math.atan2(s.b.y - s.a.y, s.b.x - s.a.x);   // direção do passo
-        var side = (k % 2 === 0) ? 1 : -1;                    // alterna pé esq/dir
-        var ox = Math.cos(ang + Math.PI / 2) * STANCE * side;
-        var oy = Math.sin(ang + Math.PI / 2) * STANCE * side;
-        var fx = x + ox, fy = y + oy;
-        var deg = ang * 180 / Math.PI + 90;                   // símbolo aponta pra cima
-
-        var el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        el.setAttribute('class', 'foot');
-        el.setAttribute('viewBox', '0 0 40 64');
-        el.style.left = (fx / W * 100) + '%';
-        el.style.top = (fy / H * 100) + '%';
-        el.style.transform = 'translate(-50%,-50%) rotate(' + deg.toFixed(1) + 'deg) scaleX(' + side + ')';
-        el.style.animationDuration = dur + 's';
-        // atraso crescente = onda que avança na direção do caminho; fill both = fica invisível antes da vez
-        el.style.animationDelay = (k / (n + 1) * dur + phase).toFixed(2) + 's';
-        var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-        use.setAttribute('href', '#i-foot');
-        el.appendChild(use);
-        box.appendChild(el);
-      }
-    });
-
-    mapInner.insertBefore(box, mapInner.firstChild);
+      var el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      el.setAttribute('class', 'foot');
+      el.setAttribute('viewBox', '0 0 40 64');
+      el.style.left = (fx / W * 100) + '%';
+      el.style.top = (fy / H * 100) + '%';
+      el.style.transform = 'translate(-50%,-50%) rotate(' + deg.toFixed(1) + 'deg) scaleX(' + side + ')';
+      el.style.animationDuration = dur + 's';
+      el.style.animationDelay = (k / (n + 1) * dur + phase).toFixed(2) + 's';
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#i-foot');
+      el.appendChild(use);
+      box.appendChild(el);
+    }
   }
 
-  if (document.readyState !== 'loading') build();
-  else document.addEventListener('DOMContentLoaded', build);
+  var box = null;
+  function render(cat) {
+    var mapInner = document.querySelector('.map-inner');
+    if (!mapInner) return;
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'footsteps';
+      box.setAttribute('aria-hidden', 'true');
+      mapInner.insertBefore(box, mapInner.firstChild);
+    }
+    box.textContent = '';
+    (SETS[cat] || SETS.all).forEach(function (trail) { buildTrail(box, trail); });
+  }
+
+  function currentCat() {
+    var mr = document.querySelector('.map-root');
+    return (mr && mr.getAttribute('data-filter')) || 'all';
+  }
+
+  function init() {
+    render(currentCat());
+    var mr = document.querySelector('.map-root');
+    if (mr && window.MutationObserver) {
+      new MutationObserver(function () { render(currentCat()); })
+        .observe(mr, { attributes: true, attributeFilter: ['data-filter'] });
+    }
+  }
+
+  if (document.readyState !== 'loading') init();
+  else document.addEventListener('DOMContentLoaded', init);
 })();
