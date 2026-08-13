@@ -384,8 +384,8 @@
       layout: layout,
       zoomable: zoomable,
       zoomTo: zoomTo,
-      demoZoom: function () { zoomTo(Math.min(MAX_SCALE, base * 1.9), vpW() * 0.5, vpH() * 0.42, 1300); },
-      reset: function () { zoomTo(base, vpW() * 0.5, vpH() * 0.5, 1000); }
+      demoZoom: function () { zoomTo(Math.min(MAX_SCALE, base * 1.9), vpW() * 0.5, vpH() * 0.42, 900); },
+      reset: function () { zoomTo(base, vpW() * 0.5, vpH() * 0.5, 800); }
     };
   }
 
@@ -555,7 +555,7 @@
     var spotEl = null;
     function showSpotlight(target, pad) {           // James-Bond vignette around a map zone
       if (!target) return;
-      pad = (pad == null) ? 16 : pad;
+      pad = (pad == null) ? 24 : pad;               // roomy hole so the pulse ring shows fully
       if (!spotEl) { spotEl = document.createElement('div'); spotEl.className = 'tut-spotlight'; document.body.appendChild(spotEl); }
       var r = target.getBoundingClientRect();
       spotEl.style.left = (r.left - pad) + 'px';
@@ -565,6 +565,22 @@
       requestAnimationFrame(function () { if (spotEl) spotEl.classList.add('on'); });
     }
     function hideSpotlight() { if (spotEl) spotEl.classList.remove('on'); }
+    function dimCard(on) { if (card) card.classList.toggle('tut-dim', on); }
+    // slow, controllable scroll of an element to a target (easeOutCubic)
+    var scrollRAF = null;
+    function cancelSlowScroll() { if (scrollRAF) { cancelAnimationFrame(scrollRAF); scrollRAF = null; } }
+    function slowScrollTo(el, target, dur) {
+      cancelSlowScroll();
+      if (!el) return;
+      var start = el.scrollTop, dist = target - start, t0 = null;
+      function step(ts) {
+        if (t0 === null) t0 = ts;
+        var p = Math.min(1, (ts - t0) / dur);
+        el.scrollTop = start + dist * (1 - Math.pow(1 - p, 3));
+        scrollRAF = (p < 1) ? requestAnimationFrame(step) : null;
+      }
+      scrollRAF = requestAnimationFrame(step);
+    }
     function cleanupMap() {
       try { hideSpotlight(); } catch (e) {}
       try { setSchedOpen(false); } catch (e) {}
@@ -577,18 +593,20 @@
     // all deferred step actions go through here so they can be cancelled on step change
     var pending = [];
     function later(fn, ms) { var id = setTimeout(fn, ms); pending.push(id); return id; }
-    function clearPending() { pending.forEach(clearTimeout); pending = []; }
+    function clearPending() { pending.forEach(clearTimeout); pending = []; cancelSlowScroll(); }
 
     var demos = [
-      { enter: function () {                          // 1) explorar: pulsa a zona, depois abre
-          scrollMapTop();
-          later(function () { spot(document.querySelector('[data-zone="praca"]')); }, 650);
-          later(function () { openSheet('praca'); }, 1700);
+      { enter: function () {                          // 1) explorar: vinheta na praça, pulso duplo, clique
+          var zone = document.querySelector('[data-zone="praca"]');
+          scrollElCenter(zone, 0.5);
+          later(function () { showSpotlight(zone); }, 1300);        // fundo escuro, praça em destaque
+          later(function () { spot(zone); }, 2500);                 // pulso duplo bem visível
+          later(function () { hideSpotlight(); openSheet('praca'); }, 4600); // clique
         },
-        exit: function () { closeSheet(); } },
-      { enter: function () {                          // 2) filtros: mostra a barra e passa por todas as opções
+        exit: function () { hideSpotlight(); closeSheet(); } },
+      { enter: function () {                          // 2) filtros: some o card e passa por todas as opções na barra
           scrollMapTop();
-          later(function () { spot(document.getElementById('filters')); }, 650);
+          later(function () { dimCard(true); }, 1200);              // esconde o card p/ ver a barra atrás
           var cats = ['arena', 'stand', 'lounge', 'food', 'apoio'];
           cats.forEach(function (cat, idx) {
             later(function () {
@@ -598,40 +616,38 @@
               if (pill) spot(pill);
             }, 1700 + idx * 1200);                    // uma opção a cada 1,2s, lentamente
           });
+          later(function () { dimCard(false); }, 1700 + cats.length * 1200); // traz o card de volta
         },
-        exit: function () { setFilter('all'); if (filters) filters.scrollTo({ left: 0, behavior: 'smooth' }); } },
-      { enter: function () {                          // 3) mover/zoom: pulsa o foco, aproxima e VOLTA
+        exit: function () { dimCard(false); setFilter('all'); if (filters) filters.scrollTo({ left: 0, behavior: 'smooth' }); } },
+      { enter: function () {                          // 3) mover/zoom: pulsa o foco, aproxima e VOLTA (mais fluido)
           scrollMapTop();
-          later(function () { spot(document.querySelector('[data-zone="arena-mind"]')); }, 650);
-          later(function () { if (ctrl && ctrl.zoomable && ctrl.zoomable()) ctrl.demoZoom(); }, 1700);
-          later(function () { if (ctrl && ctrl.reset) ctrl.reset(); }, 3800); // volta ao normal
+          later(function () { spot(document.querySelector('[data-zone="arena-mind"]')); }, 550);
+          later(function () { if (ctrl && ctrl.zoomable && ctrl.zoomable()) ctrl.demoZoom(); }, 1400);
+          later(function () { if (ctrl && ctrl.reset) ctrl.reset(); }, 2700); // volta ao normal
         },
         exit: function () { if (ctrl && ctrl.reset) ctrl.reset(); } },
-      { enter: function () {                          // 4) 2º andar: rola até o botão, pulsa, aperta, revela (sem passar)
+      { enter: function () {                          // 4) 2º andar: rola até o botão, pulsa + aperta juntos, revela
           var btn = document.querySelector('.floor-toggle-bottom');
           scrollElCenter(btn, 0.55);
           later(function () { spot(btn && btn.querySelector('.f2-bigbtn-face')); }, 1200);
-          later(function () { setFloor2(true); }, 2200);
-          later(scrollFloor2, 3300);
+          later(function () { setFloor2(true); }, 1700);            // clique logo após o pulso
+          later(scrollFloor2, 2900);
         },
         exit: function () { setFloor2(false); } },
       { enter: function () {                          // 5) FINALE cinematográfico na Arena Top Voice
           var zone = document.querySelector('[data-zone="arena-topvoice"]');
           scrollElCenter(zone, 0.5);
           later(function () { showSpotlight(zone); }, 1300);         // fundo escuro, arena em destaque
-          later(function () { spot(zone); }, 2500);                  // pulso duplo
-          later(function () { hideSpotlight(); openSheet('arena-topvoice'); }, 4600); // clique
-          later(function () { spot(document.getElementById('sched-toggle')); }, 5700); // mostra o botão
-          later(function () { setSchedOpen(true); }, 7400);          // pulso duplo + clique
-          later(function () {                                        // programação surge: rola bem suave
+          later(function () { spot(zone); }, 3200);                  // pulso duplo (sobre a vinheta)
+          later(function () { hideSpotlight(); }, 3500);             // fecha a vinheta
+          later(function () { openSheet('arena-topvoice'); }, 3700); // clique ~meio segundo após o pulso
+          later(function () { spot(document.getElementById('sched-toggle')); }, 4900); // mostra o botão
+          later(function () { setSchedOpen(true); }, 6600);          // pulso duplo + clique
+          later(function () {                                        // programação surge: rola lentamente até o fim
             var scr = document.getElementById('sheet-scroll');
-            var wrap = document.getElementById('sched-toggle-wrap');
-            if (scr && wrap) {
-              var r1 = wrap.getBoundingClientRect(), r0 = scr.getBoundingClientRect();
-              scr.scrollTo({ top: scr.scrollTop + (r1.top - r0.top) - 8, behavior: 'smooth' });
-            }
-          }, 8100);
-          later(function () { close(); }, 10600);                    // encerra e volta ao topo
+            if (scr) slowScrollTo(scr, scr.scrollHeight - scr.clientHeight, 6000);
+          }, 7400);
+          later(function () { close(); }, 14200);                    // encerra e volta ao topo
         },
         exit: function () { hideSpotlight(); setSchedOpen(false); closeSheet(); } }
     ];
