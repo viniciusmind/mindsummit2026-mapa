@@ -130,3 +130,40 @@ window.SCHEDULE = {
     ]
   }
 };
+
+/* Palestrante (campo "q") -> avatares (rostos-bolinha em assets/speakers/).
+   Chave = string exata do campo q. Sessões sem rosto (Convidado Especial,
+   Em breve, Em curadoria, etc.) ficam de fora e não renderizam avatar. */
+window.SPEAKERS = {
+  'Adriana Drulla': ['adriana'],
+  'Alana Anijar': ['alana'],
+  'Amy Edmondson': ['amy'],
+  'Ana Bógus; Adriana Drulla': ['ana-bogus', 'adriana'],
+  'Ana Claudia Quintana Arantes': ['ana-claudia'],
+  'Caito Maia': ['caito'],
+  'Carla Tieppo': ['carla'],
+  'Christina Maslach': ['christina'],
+  'Cirlene Zimmermann': ['cirlene'],
+  'Daniel de Barros e Arthur Guerra': ['daniel', 'arthur'],
+  'Deepika Chopra · Mediação: Virgínia Leite': ['deepika'],
+  'Edna Goldoni e convidadas': ['edna'],
+  'Edna Goldoni': ['edna'],
+  'Fernanda Catena; Márcio Atalla': ['fernanda', 'marcio'],
+  'Gustavo Locatelli; Mauro Muller; Cirlene Zimmermann': ['gustavo', 'mauro', 'cirlene'],
+  'Igor Menezes e Esabela Cruz': ['igor', 'esabela'],
+  'Izabella Camargo; Lailson Lima; Irene Reis': ['izabella', 'lailson', 'irene'],
+  'Jan-Emmanuel De Neve': ['deneve'],
+  'João Yosef Torres e Ana Mocny': ['joao', 'ana-mocny'],
+  'João Yosef Torres': ['joao'],
+  'Maryanna com Y': ['maryanna'],
+  'Michael E. Long': ['michael'],
+  'Michelle Schneider': ['michelle'],
+  'Oscar de Bos': ['oscar'],
+  'Paul Goldsmith · Mediação: Sibelle Pedral': ['paul'],
+  'Paula Benevides': ['paula'],
+  'Renata Rivetti': ['renata'],
+  'Sonja Lyubomirsky': ['sonja'],
+  'Tamara Myles': ['tamara'],
+  'Veruska Galvão': ['veruska'],
+  'Yuri Trafane': ['yuri']
+};

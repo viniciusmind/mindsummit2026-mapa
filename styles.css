@@ -23,6 +23,7 @@
   --cinza-100:#E3E3ED;
   --cinza-200:#8F8FA3;
   --cinza-300:#2C2D3D;
+  --hairline:rgba(143,143,163,0.27);
   --arena-navy:#0F1B33;
 
   --font:"Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -102,8 +103,9 @@ a:hover{color:var(--light)}
 .filters{
   display:flex;gap:10px;
   padding-top:12px;padding-bottom:16px;
-  position:sticky;top:0;z-index:20;          /* frozen at the top of the map */
+  position:sticky;top:0;z-index:30;          /* frozen to the screen when scrolling */
   background:var(--page-bg);
+  box-shadow:0 8px 18px -10px rgba(0,0,0,0.65);  /* reads as floating over the map */
   overflow-x:auto;                 /* swipe on mobile */
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
@@ -294,8 +296,15 @@ a:hover{color:var(--light)}
 }
 .btn-close:hover{background:#f0f0f0}
 
-/* ---- "veja o que acontece aqui" toggle ---- */
-.sched-toggle[hidden]{display:none}
+/* ---- "veja o que acontece aqui" toggle (congelado no scroll) ---- */
+.sched-toggle-wrap[hidden]{display:none}
+.sched-toggle-wrap{
+  position:sticky;top:0;z-index:5;
+  display:flex;justify-content:center;
+  padding:6px 0 12px;
+  background:var(--neutral-dark);
+  box-shadow:0 8px 14px -8px rgba(0,0,0,0.6);
+}
 .sched-toggle{
   align-self:center;
   display:inline-flex;align-items:center;gap:9px;
@@ -320,36 +329,78 @@ a:hover{color:var(--light)}
 .sheet-schedule:not([hidden]){animation:schedReveal .42s var(--ease-out)}
 .sheet-schedule{
   display:flex;flex-direction:column;
-  border-top:1px solid var(--cinza-300);padding-top:16px;margin-top:2px;
+  border-top:1px solid var(--hairline);padding-top:16px;margin-top:2px;
 }
+/* eyebrow — pílula verde com símbolo Mind */
 .sched-head{
-  font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;
-  color:var(--verde);line-height:1;margin-bottom:14px;
+  align-self:flex-start;display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;
+  color:#13131A;background:var(--verde);border-radius:100px;padding:6px 12px 6px 10px;
+  line-height:1;margin-bottom:18px;
 }
+.sched-head-sym{width:13px;height:13px;object-fit:contain;display:block}
+/* cabeçalho de dia */
 .sched-day{
-  font-size:15px;font-weight:700;color:var(--light);line-height:1.1;
-  margin:20px 0 6px;padding-left:10px;border-left:3px solid var(--roxo);
+  font-size:15px;font-weight:900;color:var(--light);line-height:1.1;letter-spacing:-0.01em;
+  margin:22px 0 6px;padding-left:10px;border-left:3px solid var(--verde);
 }
 .sched-day:first-of-type{margin-top:0}
+
+/* acento por tipo de sessão (horário + traço da dupla) */
+.sched-acc-verde{--acc:var(--verde)}
+.sched-acc-coral{--acc:var(--laranja)}
+.sched-acc-roxo{--acc:var(--roxo)}
+.sched-acc-cinza{--acc:var(--cinza-200)}
+
 .sched-row{
-  display:flex;gap:12px;padding:12px 0;
-  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;gap:12px;padding:13px 0;
+  border-top:1px solid var(--hairline);
+}
+.sched-row--cont{
+  border-top-color:transparent;
+  margin-left:2px;padding-left:12px;
+  border-left:2px solid var(--acc);
 }
 .sched-time{
-  flex:0 0 54px;font-size:13px;font-weight:700;color:var(--verde);
-  line-height:1.25;font-variant-numeric:tabular-nums;
+  flex:0 0 52px;font-variant-numeric:tabular-nums;
   display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;
+  line-height:1.1;
 }
-.sched-time-sep{opacity:.55}
-.sched-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+.sched-t1{font-size:15px;font-weight:900;color:var(--acc,var(--verde))}
+.sched-time-sep{font-size:11px;color:var(--cinza-200);opacity:.7;line-height:1}
+.sched-t2{font-size:11px;font-weight:700;color:var(--cinza-200)}
+.sched-main{display:flex;flex-direction:column;gap:6px;min-width:0}
+
+/* etiqueta de tipo (cor semântica) */
 .sched-tag{
-  align-self:flex-start;font-size:10px;font-weight:600;letter-spacing:0.08em;
-  text-transform:uppercase;color:var(--cinza-100);
-  background:var(--cinza-300);border-radius:100px;padding:3px 9px;line-height:1;
+  align-self:flex-start;font-size:10px;font-weight:900;letter-spacing:0.1em;
+  text-transform:uppercase;border-radius:100px;padding:4px 10px;line-height:1;
 }
-.sched-title{font-size:15px;font-weight:600;color:var(--light);line-height:1.35;text-wrap:pretty}
-.sched-who{font-size:13px;font-weight:400;color:var(--cinza-200);line-height:1.35;text-wrap:pretty}
-.sched-tickets{font-size:12px;font-weight:600;color:var(--cinza-200);line-height:1.35}
+.sched-tag--verde{background:var(--verde);color:#13131A}
+.sched-tag--coral{background:var(--laranja);color:#13131A}
+.sched-tag--roxo{background:var(--roxo);color:#fff}
+.sched-tag--cinza{background:var(--cinza-300);color:var(--cinza-100)}
+
+.sched-title{font-size:15px;font-weight:700;color:var(--light);line-height:1.3;text-wrap:pretty}
+
+/* quem conduz — avatares em círculo + nome */
+.sched-who{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:1px}
+.sched-avatars{display:inline-flex;flex-shrink:0}
+.sched-avatar{
+  width:30px;height:30px;border-radius:50%;object-fit:cover;object-position:top center;
+  background:var(--cinza-300);border:2px solid var(--neutral-dark);
+  box-shadow:0 0 0 1px var(--cinza-300);margin-left:-9px;
+}
+.sched-avatar:first-child{margin-left:0}
+.sched-who-name{font-size:13px;font-weight:400;color:var(--cinza-100);line-height:1.3}
+
+/* chips de ingresso — contorno colorido */
+.sched-tickets{display:flex;flex-wrap:wrap;gap:6px;margin-top:1px}
+.tk{
+  font-size:9px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;
+  border-radius:100px;padding:4px 9px;line-height:1;
+  border:1px solid currentColor;color:var(--cinza-200);
+}
 .tk-mind{color:var(--verde)}
 .tk-vip{color:var(--laranja)}
 .tk-prime{color:var(--roxo)}
@@ -478,9 +529,9 @@ a:hover{color:var(--light)}
 .f2-bigbtn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .f2-bigbtn-face{
   display:flex;align-items:center;justify-content:center;gap:10px;
-  width:100%;height:50px;border-radius:12px;
+  width:100%;height:42.5px;border-radius:12px;
   background:#FBF4D0;color:#13131A;
-  font-family:var(--font);font-weight:900;font-size:clamp(15px,2.6vw,19px);
+  font-family:var(--font);font-weight:900;font-size:clamp(13px,2.2vw,16px);
   text-transform:uppercase;letter-spacing:0.06em;line-height:1;
   box-shadow:0 4px 0 0 #cfc79a;
   transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out);

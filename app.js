@@ -82,19 +82,19 @@
   var elBody = document.getElementById('sheet-body');
   var elSched = document.getElementById('sheet-schedule');
   var elSchedToggle = document.getElementById('sched-toggle');
+  var elSchedToggleWrap = document.getElementById('sched-toggle-wrap');
   var elSchedToggleTxt = elSchedToggle && elSchedToggle.querySelector('.sched-toggle-txt');
   var elScroll = document.getElementById('sheet-scroll');
   var lastFocus = null;
   var SCHED_LABELS = { open: 'Veja o que acontece aqui', close: 'Ocultar programação' };
 
-  // color each ticket tier (Mind / VIP / Prime) with its own accent
+  // color each ticket tier (Mind / VIP / Prime) with its own outlined chip
   function appendTickets(main, str) {
     var tk = document.createElement('div');
     tk.className = 'sched-tickets';
-    String(str).split(',').forEach(function (part, idx) {
+    String(str).split(',').forEach(function (part) {
       var name = part.trim();
       if (!name) return;
-      if (idx > 0) tk.appendChild(document.createTextNode(', '));
       var span = document.createElement('span');
       var low = name.toLowerCase();
       if (low.indexOf('mind') !== -1) span.className = 'tk tk-mind';
@@ -107,13 +107,54 @@
     main.appendChild(tk);
   }
 
+  // semantic colour of the type label (see cores.css):
+  // workshop=coral · masterclass/autógrafo=roxo · palestra/painel/curadoria=verde · resto=cinza
+  function schedTagVariant(k) {
+    var t = k.toLowerCase();
+    if (t.indexOf('workshop') !== -1) return 'coral';
+    if (t.indexOf('masterclass') !== -1 || t.indexOf('autógrafo') !== -1 || t.indexOf('autografo') !== -1) return 'roxo';
+    if (t.indexOf('palestra') !== -1 || t.indexOf('painel') !== -1 || t.indexOf('curadoria') !== -1 ||
+        t.indexOf('abertura') !== -1 || t.indexOf('experiência') !== -1 || t.indexOf('experiencia') !== -1 ||
+        t.indexOf('lançamento') !== -1 || t.indexOf('lancamento') !== -1) return 'verde';
+    return 'cinza';
+  }
+
+  // "quem conduz": avatares em círculo (rostos-bolinha) + nome
+  function appendWho(main, q) {
+    var who = document.createElement('div');
+    who.className = 'sched-who';
+    var faces = window.SPEAKERS && window.SPEAKERS[q];
+    if (faces && faces.length) {
+      var av = document.createElement('span');
+      av.className = 'sched-avatars';
+      faces.forEach(function (key) {
+        var img = document.createElement('img');
+        img.className = 'sched-avatar';
+        img.src = 'assets/speakers/' + key + '.png';
+        img.alt = '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        av.appendChild(img);
+      });
+      who.appendChild(av);
+    }
+    var name = document.createElement('span');
+    name.className = 'sched-who-name';
+    name.textContent = q;
+    who.appendChild(name);
+    main.appendChild(who);
+  }
+
   // build the per-location schedule (Dia 1 / Dia 2) into the sheet
   function renderSchedule(sched) {
     elSched.textContent = '';
     if (!sched) return;
     var head = document.createElement('div');
     head.className = 'sched-head';
-    head.textContent = 'Programação';
+    var sym = document.createElement('img');
+    sym.className = 'sched-head-sym'; sym.src = 'assets/simbolo-mind-preto.png'; sym.alt = '';
+    head.appendChild(sym);
+    head.appendChild(document.createTextNode('Programação'));
     elSched.appendChild(head);
     [['Dia 1 · 16 de setembro', sched.d1], ['Dia 2 · 17 de setembro', sched.d2]].forEach(function (day) {
       if (!day[1] || !day[1].length) return;
@@ -122,24 +163,28 @@
       dh.textContent = day[0];
       elSched.appendChild(dh);
       day[1].forEach(function (s) {
+        var kind = String(s.k || '');
+        var cont = /^↳/.test(kind);                 // sessão paralela / continuação
+        var kindClean = kind.replace(/^↳\s*/, '');
+        var variant = schedTagVariant(kindClean);
         var row = document.createElement('div');
-        row.className = 'sched-row';
+        row.className = 'sched-row sched-acc-' + variant + (cont ? ' sched-row--cont' : '');
         var time = document.createElement('div');
         time.className = 'sched-time';
         var parts = String(s.t).split(/\s*[–—-]\s*/);
         if (parts.length === 2) {
-          var t1 = document.createElement('span'); t1.textContent = parts[0].trim();
+          var t1 = document.createElement('span'); t1.className = 'sched-t1'; t1.textContent = parts[0].trim();
           var sep = document.createElement('span'); sep.className = 'sched-time-sep'; sep.textContent = '·';
-          var t2 = document.createElement('span'); t2.textContent = parts[1].trim();
+          var t2 = document.createElement('span'); t2.className = 'sched-t2'; t2.textContent = parts[1].trim();
           time.appendChild(t1); time.appendChild(sep); time.appendChild(t2);
         } else {
           time.textContent = String(s.t);
         }
         var main = document.createElement('div');
         main.className = 'sched-main';
-        if (s.k) { var tag = document.createElement('span'); tag.className = 'sched-tag'; tag.textContent = s.k; main.appendChild(tag); }
+        if (kindClean) { var tag = document.createElement('span'); tag.className = 'sched-tag sched-tag--' + variant; tag.textContent = kindClean; main.appendChild(tag); }
         var title = document.createElement('div'); title.className = 'sched-title'; title.textContent = s.s; main.appendChild(title);
-        if (s.q) { var who = document.createElement('div'); who.className = 'sched-who'; who.textContent = s.q; main.appendChild(who); }
+        if (s.q) appendWho(main, s.q);
         if (s.i) appendTickets(main, s.i);
         row.appendChild(time);
         row.appendChild(main);
@@ -174,7 +219,7 @@
     elBody.textContent = z.b;
     var sched = window.SCHEDULE && window.SCHEDULE[id];
     renderSchedule(sched);
-    if (elSchedToggle) elSchedToggle.hidden = !sched;
+    if (elSchedToggleWrap) elSchedToggleWrap.hidden = !sched;
     setSchedOpen(false); // start collapsed; button reveals it
     if (elScroll) elScroll.scrollTop = 0;
     lastFocus = document.activeElement;

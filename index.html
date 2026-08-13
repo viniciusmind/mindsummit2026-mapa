@@ -392,10 +392,12 @@
         <div class="sheet-title-en" id="sheet-title-en"></div>
       </div>
       <div class="sheet-body" id="sheet-body"></div>
-      <button class="sched-toggle" id="sched-toggle" type="button" hidden aria-expanded="false" aria-controls="sheet-schedule">
-        <span class="sched-toggle-txt">Veja o que acontece aqui</span>
-        <span class="sched-caret" aria-hidden="true"></span>
-      </button>
+      <div class="sched-toggle-wrap" id="sched-toggle-wrap" hidden>
+        <button class="sched-toggle" id="sched-toggle" type="button" aria-expanded="false" aria-controls="sheet-schedule">
+          <span class="sched-toggle-txt">Veja o que acontece aqui</span>
+          <span class="sched-caret" aria-hidden="true"></span>
+        </button>
+      </div>
       <div class="sheet-schedule" id="sheet-schedule" hidden></div>
     </div>
     <button class="btn-close" data-close>Fechar</button>
