@@ -638,16 +638,16 @@
           var zone = document.querySelector('[data-zone="arena-topvoice"]');
           scrollElCenter(zone, 0.5);
           later(function () { showSpotlight(zone); }, 1300);         // fundo escuro, arena em destaque
-          later(function () { spot(zone); }, 3200);                  // pulso duplo (sobre a vinheta)
-          later(function () { hideSpotlight(); }, 3500);             // fecha a vinheta
-          later(function () { openSheet('arena-topvoice'); }, 3700); // clique ~meio segundo após o pulso
-          later(function () { spot(document.getElementById('sched-toggle')); }, 4900); // mostra o botão
-          later(function () { setSchedOpen(true); }, 6600);          // pulso duplo + clique
+          later(function () { spot(zone); }, 3200);                  // pulso duplo (todo sobre a vinheta escura)
+          later(function () { hideSpotlight(); }, 4800);             // fecha a vinheta só depois do pulso completo
+          later(function () { openSheet('arena-topvoice'); }, 5300); // clique ~meio segundo após fechar a vinheta
+          later(function () { spot(document.getElementById('sched-toggle')); }, 6500); // mostra o botão
+          later(function () { setSchedOpen(true); }, 8200);          // pulso duplo + clique
           later(function () {                                        // programação surge: rola lentamente até o fim
             var scr = document.getElementById('sheet-scroll');
             if (scr) slowScrollTo(scr, scr.scrollHeight - scr.clientHeight, 6000);
-          }, 7400);
-          later(function () { close(); }, 14200);                    // encerra e volta ao topo
+          }, 9000);
+          later(function () { close(); }, 15800);                    // encerra e volta ao topo
         },
         exit: function () { hideSpotlight(); setSchedOpen(false); closeSheet(); } }
     ];

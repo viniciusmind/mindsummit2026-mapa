@@ -48,6 +48,27 @@ a{color:var(--verde);text-decoration:none}
 a:hover{color:var(--light)}
 ::selection{background:var(--verde);color:var(--preto)}
 
+/* ---- pegadas animadas nos corredores ---- */
+.footsteps{position:absolute;inset:0;pointer-events:none;z-index:0}
+.foot{
+  position:absolute;width:17px;height:27px;
+  fill:var(--verde);opacity:0;
+  transform-origin:center;
+  animation-name:footstep;animation-timing-function:linear;
+  animation-iteration-count:infinite;animation-fill-mode:both;
+  will-change:opacity;
+}
+@keyframes footstep{
+  0%   {opacity:0}
+  10%  {opacity:.85}
+  30%  {opacity:.85}
+  46%  {opacity:0}
+  100% {opacity:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .foot{animation:none;opacity:.16}   /* sem piscar: caminho estático e discreto */
+}
+
 /* ---- page shell ---- */
 .page{
   position:relative;
