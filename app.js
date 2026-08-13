@@ -286,6 +286,7 @@
       frame.style.height = vpH() + 'px';
       scale = base; tx = 0; ty = 0;
       frame.classList.toggle('is-zoomable', zoomable());
+      if (mapRoot) mapRoot.classList.toggle('is-zoomable', zoomable()); // drive the hint without :has()
       clampAndApply();
     }
 
@@ -311,6 +312,7 @@
       pointers.set(e.pointerId, loc(e));
       moved = 0;
       frame.classList.add('hint-hidden');
+      if (mapRoot) mapRoot.classList.add('hint-hidden');
       if (pointers.size === 2) {
         // pinch: own both pointers
         pointers.forEach(function (_, id) { capture(id); });

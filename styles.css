@@ -156,8 +156,10 @@ a:hover{color:var(--light)}
   transition:opacity var(--dur-base) var(--ease-out);
 }
 .map-hint .ico{width:15px;height:15px;color:var(--verde)}
+.map-root.is-zoomable .map-hint{display:flex}      /* class-driven: works without :has() */
+.map-root.hint-hidden .map-hint{opacity:0}
+/* fallback para navegadores com :has(), caso o JS não rode */
 .map-root:has(.scale-fit.is-zoomable) .map-hint{display:flex}
-.map-root:has(.scale-fit.hint-hidden) .map-hint{opacity:0}
 
 /* ---- floor-plan canvas (native 1000x1918) ---- */
 .map-box{
