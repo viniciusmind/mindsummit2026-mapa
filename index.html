@@ -333,10 +333,10 @@
         </div>
       </div>
     </div>
-    <div class="map-hint">
-      <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
-      Arraste para mover · dois dedos ou toque duplo para zoom
-    </div>
+  </div>
+  <div class="map-hint">
+    <svg class="ico"><use href="#i-arrows-out-line-horizontal"/></svg>
+    Arraste para mover · dois dedos ou toque duplo para zoom
   </div>
 
   <!-- ============ 2ND-FLOOR TOGGLE (bottom) ============ -->
@@ -344,7 +344,7 @@
     <label class="f2-bigbtn">
       <input type="checkbox" class="floor2-switch">
       <span class="f2-bigbtn-face">
-        <svg class="ico" width="26" height="26" style="color:#13131A"><use href="#i-steps"/></svg>
+        <svg class="ico" width="22" height="22" style="color:#13131A"><use href="#i-steps"/></svg>
         2º andar
       </span>
     </label>
@@ -385,16 +385,24 @@
   <div class="sheet-overlay" data-close></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <div class="sheet-grab"></div>
-    <div class="sheet-kind" id="sheet-kind"></div>
-    <div class="sheet-titles">
-      <div class="sheet-title" id="sheet-title"></div>
-      <div class="sheet-title-en" id="sheet-title-en"></div>
+    <div class="sheet-scroll" id="sheet-scroll">
+      <div class="sheet-kind" id="sheet-kind"></div>
+      <div class="sheet-titles">
+        <div class="sheet-title" id="sheet-title"></div>
+        <div class="sheet-title-en" id="sheet-title-en"></div>
+      </div>
+      <div class="sheet-body" id="sheet-body"></div>
+      <button class="sched-toggle" id="sched-toggle" type="button" hidden aria-expanded="false" aria-controls="sheet-schedule">
+        <span class="sched-toggle-txt">Veja o que acontece aqui</span>
+        <span class="sched-caret" aria-hidden="true"></span>
+      </button>
+      <div class="sheet-schedule" id="sheet-schedule" hidden></div>
     </div>
-    <div class="sheet-body" id="sheet-body"></div>
     <button class="btn-close" data-close>Fechar</button>
   </div>
 </div>
 
+<script src="schedule.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

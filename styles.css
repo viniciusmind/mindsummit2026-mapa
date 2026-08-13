@@ -55,7 +55,7 @@ a:hover{color:var(--light)}
   margin:0 auto;
   background:var(--page-bg);
   padding-bottom:60px;
-  overflow:hidden;             /* clips the decorative glow */
+  overflow-x:clip;             /* clips the glow sideways WITHOUT breaking sticky */
 }
 .glow{
   position:absolute;top:-260px;left:-180px;
@@ -101,8 +101,9 @@ a:hover{color:var(--light)}
    ============================================================ */
 .filters{
   display:flex;gap:10px;
-  padding-top:6px;padding-bottom:20px;
-  position:relative;
+  padding-top:12px;padding-bottom:16px;
+  position:sticky;top:0;z-index:20;          /* frozen at the top of the map */
+  background:var(--page-bg);
   overflow-x:auto;                 /* swipe on mobile */
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
@@ -142,18 +143,19 @@ a:hover{color:var(--light)}
 .ico{fill:currentColor;display:inline-block;flex:0 0 auto;vertical-align:middle}
 
 /* zoom hint (touch / narrow only) */
+/* hint now lives BELOW the map (normal flow), centered; only when zoomable */
 .map-hint{
-  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
-  display:none;align-items:center;gap:8px;
+  display:none;width:fit-content;margin:14px auto 0;
+  align-items:center;gap:8px;
   padding:8px 14px;border-radius:100px;
-  background:rgba(11,11,15,0.82);box-shadow:0 4px 16px rgba(0,0,0,0.4);
-  color:#E3E3ED;font-size:12px;font-weight:500;line-height:1;white-space:nowrap;
-  pointer-events:none;z-index:5;
+  background:rgba(255,255,255,0.05);
+  color:#8F8FA3;font-size:12px;font-weight:500;line-height:1;white-space:nowrap;
+  pointer-events:none;
   transition:opacity var(--dur-base) var(--ease-out);
 }
 .map-hint .ico{width:15px;height:15px;color:var(--verde)}
-.scale-fit.is-zoomable .map-hint{display:flex}
-.scale-fit.hint-hidden .map-hint{opacity:0}
+.map-root:has(.scale-fit.is-zoomable) .map-hint{display:flex}
+.map-root:has(.scale-fit.hint-hidden) .map-hint{opacity:0}
 
 /* ---- floor-plan canvas (native 1000x1918) ---- */
 .map-box{
@@ -267,11 +269,18 @@ a:hover{color:var(--light)}
   border-radius:24px 24px 0 0;box-shadow:0 8px 40px rgba(0,0,0,0.45);
   padding:14px 28px 32px;padding-bottom:calc(32px + env(safe-area-inset-bottom));
   z-index:41;display:flex;flex-direction:column;gap:14px;
+  max-height:88vh;
   transition:transform var(--dur-base) var(--ease-out);
 }
 .is-open .sheet-overlay{opacity:1;visibility:visible}
 .is-open .sheet{transform:translateX(-50%) translateY(0)}
-.sheet-grab{width:44px;height:4px;border-radius:100px;background:var(--cinza-300);align-self:center}
+.sheet-grab{width:44px;height:4px;border-radius:100px;background:var(--cinza-300);align-self:center;flex:0 0 auto}
+.sheet-scroll{
+  display:flex;flex-direction:column;gap:14px;
+  flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  margin:0 -6px;padding:2px 6px;
+}
 .sheet-kind{font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--verde);line-height:1;min-height:1em}
 .sheet-titles{display:flex;flex-direction:column;gap:2px}
 .sheet-title{font-size:28px;font-weight:700;color:var(--light);line-height:120%}
@@ -284,6 +293,66 @@ a:hover{color:var(--light)}
   transition:background var(--dur-fast);
 }
 .btn-close:hover{background:#f0f0f0}
+
+/* ---- "veja o que acontece aqui" toggle ---- */
+.sched-toggle[hidden]{display:none}
+.sched-toggle{
+  align-self:center;
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--verde);color:var(--preto);
+  border:0;border-radius:100px;cursor:pointer;
+  font-family:var(--font);font-weight:700;font-size:14px;line-height:1;
+  padding:11px 18px;
+  transition:filter var(--dur-fast);
+}
+.sched-toggle:hover{filter:brightness(1.06)}
+.sched-caret{
+  width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:6px solid currentColor;
+  transition:transform var(--dur-fast) var(--ease-out);
+}
+.sched-toggle[aria-expanded="true"] .sched-caret{transform:rotate(180deg)}
+
+/* ---- per-location schedule inside the sheet ---- */
+.sheet-schedule[hidden]{display:none}
+@keyframes schedReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sheet-schedule:not([hidden]){animation:schedReveal .42s var(--ease-out)}
+.sheet-schedule{
+  display:flex;flex-direction:column;
+  border-top:1px solid var(--cinza-300);padding-top:16px;margin-top:2px;
+}
+.sched-head{
+  font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--verde);line-height:1;margin-bottom:14px;
+}
+.sched-day{
+  font-size:15px;font-weight:700;color:var(--light);line-height:1.1;
+  margin:20px 0 6px;padding-left:10px;border-left:3px solid var(--roxo);
+}
+.sched-day:first-of-type{margin-top:0}
+.sched-row{
+  display:flex;gap:12px;padding:12px 0;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.sched-time{
+  flex:0 0 54px;font-size:13px;font-weight:700;color:var(--verde);
+  line-height:1.25;font-variant-numeric:tabular-nums;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;
+}
+.sched-time-sep{opacity:.55}
+.sched-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+.sched-tag{
+  align-self:flex-start;font-size:10px;font-weight:600;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--cinza-100);
+  background:var(--cinza-300);border-radius:100px;padding:3px 9px;line-height:1;
+}
+.sched-title{font-size:15px;font-weight:600;color:var(--light);line-height:1.35;text-wrap:pretty}
+.sched-who{font-size:13px;font-weight:400;color:var(--cinza-200);line-height:1.35;text-wrap:pretty}
+.sched-tickets{font-size:12px;font-weight:600;color:var(--cinza-200);line-height:1.35}
+.tk-mind{color:var(--verde)}
+.tk-vip{color:var(--laranja)}
+.tk-prime{color:var(--roxo)}
 
 /* ---- narrow phones: tighten header ---- */
 @media (max-width:560px){
@@ -344,7 +413,7 @@ a:hover{color:var(--light)}
 .js .zone.pulse-once{animation:pulseOnce 2.2s var(--ease-out) 1}
 
 /* --- bottom sheet: content cascades in after the sheet slides up --- */
-.js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .btn-close{
+.js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .sched-toggle,.js .btn-close{
   opacity:0;transform:translateY(9px);
   transition:opacity .5s var(--ease-out),transform .5s var(--ease-out);
 }
@@ -352,7 +421,8 @@ a:hover{color:var(--light)}
 .js .is-open .sheet-title{opacity:1;transform:none;transition-delay:.24s}
 .js .is-open .sheet-title-en{opacity:1;transform:none;transition-delay:.31s}
 .js .is-open .sheet-body{opacity:1;transform:none;transition-delay:.39s}
-.js .is-open .btn-close{opacity:1;transform:none;transition-delay:.47s}
+.js .is-open .sched-toggle{opacity:1;transform:none;transition-delay:.45s}
+.js .is-open .btn-close{opacity:1;transform:none;transition-delay:.52s}
 
 /* --- ambient: the top glow breathes very slowly --- */
 @keyframes breathe{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.42;transform:scale(1.06)}}
@@ -368,7 +438,9 @@ a:hover{color:var(--light)}
   .js .floor2-wrap.in .room{animation:none}
   .js .zone.is-pressed{transform:none}
   .js .zone.pulse-once{animation:none}
-  .js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .btn-close{opacity:1;transform:none;transition:none}
+  .js .sheet-kind,.js .sheet-title,.js .sheet-title-en,.js .sheet-body,.js .sched-toggle,.js .btn-close{opacity:1;transform:none;transition:none}
+  .sheet-schedule:not([hidden]){animation:none}
+  .sched-caret{transition:none}
   .js .glow{animation:none}
   .map-root:not([data-filter="all"]) .layer{transform:none}   /* keep the dim, drop the movement */
 }
@@ -405,43 +477,43 @@ a:hover{color:var(--light)}
 .f2-bigbtn{display:block;width:100%;cursor:pointer}
 .f2-bigbtn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .f2-bigbtn-face{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  width:100%;height:68px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;height:50px;border-radius:12px;
   background:#FBF4D0;color:#13131A;
-  font-family:var(--font);font-weight:900;font-size:clamp(18px,4vw,26px);
+  font-family:var(--font);font-weight:900;font-size:clamp(15px,2.6vw,19px);
   text-transform:uppercase;letter-spacing:0.06em;line-height:1;
-  box-shadow:0 5px 0 0 #cfc79a;
+  box-shadow:0 4px 0 0 #cfc79a;
   transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out);
   user-select:none;
 }
 .f2-bigbtn:hover .f2-bigbtn-face{background:#f7efc4}
 .f2-bigbtn input:checked + .f2-bigbtn-face{
-  transform:translateY(5px);
-  box-shadow:0 0 0 0 #cfc79a, inset 0 3px 8px rgba(0,0,0,0.22);
+  transform:translateY(4px);
+  box-shadow:0 0 0 0 #cfc79a, inset 0 3px 7px rgba(0,0,0,0.22);
   background:#ece2ac;
 }
 .f2-bigbtn input:focus-visible + .f2-bigbtn-face{outline:2px solid #13131A;outline-offset:3px}
 
 /* ---- ground floor blurs away when the upper floor is shown ---- */
-.map-inner{transition:filter var(--dur-base) var(--ease-out)}
-.map-root.show-floor2 .map-inner{filter:blur(6px) brightness(0.45)}
+.map-inner{transition:filter var(--dur-base) var(--ease-out) .3s}          /* exit: un-blur last */
+.map-root.show-floor2 .map-inner{filter:blur(6px) brightness(0.45);transition-delay:0s}  /* enter: blur first */
 
 /* ---- overlay = a visibility/clip container (same box as .map-inner) ---- */
 .floor2-overlay{
   position:absolute;left:20px;top:10px;width:960px;height:1878px;z-index:2;
   visibility:hidden;pointer-events:none;
-  transition:visibility var(--dur-base);
+  transition:visibility .78s;
 }
 .map-root.show-floor2 .floor2-overlay{visibility:visible;pointer-events:auto}
 
 /* dark wash over the blurred ground floor */
 /* scrim = a light translucent wash over the WHOLE (blurred) map — the "rest" */
-.f2-scrim{position:absolute;top:-10px;left:-20px;width:1000px;height:1918px;background:rgba(0,0,0,0.42);opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
-.map-root.show-floor2 .f2-scrim{opacity:1}
+.f2-scrim{position:absolute;top:-10px;left:-20px;width:1000px;height:1918px;background:rgba(0,0,0,0.42);opacity:0;transition:opacity var(--dur-base) var(--ease-out) .3s}
+.map-root.show-floor2 .f2-scrim{opacity:1;transition-delay:0s}
 
 /* black panel ONLY behind the 2nd-floor content band (full map width) */
-.f2-panel{position:absolute;left:-20px;width:1000px;top:54%;height:40%;background:rgba(0,0,0,0.92);opacity:0;transition:opacity var(--dur-base) var(--ease-out)}
-.map-root.show-floor2 .f2-panel{opacity:1}
+.f2-panel{position:absolute;left:-20px;width:1000px;top:54%;height:40%;background:rgba(0,0,0,0.92);opacity:0;transition:opacity var(--dur-base) var(--ease-out) .3s}
+.map-root.show-floor2 .f2-panel{opacity:1;transition-delay:0s}
 
 /* stairs & elevators stay put (right over the ground floor's); only the corridor
    and rooms emerge ABOVE them, so the 2nd floor reads as the ground extended upward */
@@ -476,6 +548,17 @@ a:hover{color:var(--light)}
 
 /* rooms emerge above the corridor with a gentle left→right stagger */
 .floor2-overlay .room{opacity:0;transform:translateY(24px);transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
+/* exit only (reverse of the entrance): rooms leave right → left */
+.floor2-overlay .room:nth-child(1){transition-delay:.27s}
+.floor2-overlay .room:nth-child(2){transition-delay:.24s}
+.floor2-overlay .room:nth-child(3){transition-delay:.21s}
+.floor2-overlay .room:nth-child(4){transition-delay:.18s}
+.floor2-overlay .room:nth-child(5){transition-delay:.15s}
+.floor2-overlay .room:nth-child(6){transition-delay:.12s}
+.floor2-overlay .room:nth-child(7){transition-delay:.09s}
+.floor2-overlay .room:nth-child(8){transition-delay:.06s}
+.floor2-overlay .room:nth-child(9){transition-delay:.03s}
+.floor2-overlay .room:nth-child(10){transition-delay:0s}
 .map-root.show-floor2 .floor2-overlay .room{opacity:1;transform:none}
 .map-root.show-floor2 .floor2-overlay .room:nth-child(1){transition-delay:.26s}
 .map-root.show-floor2 .floor2-overlay .room:nth-child(2){transition-delay:.30s}

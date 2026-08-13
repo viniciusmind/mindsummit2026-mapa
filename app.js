@@ -80,7 +80,90 @@
   var elTitle = document.getElementById('sheet-title');
   var elTitleEn = document.getElementById('sheet-title-en');
   var elBody = document.getElementById('sheet-body');
+  var elSched = document.getElementById('sheet-schedule');
+  var elSchedToggle = document.getElementById('sched-toggle');
+  var elSchedToggleTxt = elSchedToggle && elSchedToggle.querySelector('.sched-toggle-txt');
+  var elScroll = document.getElementById('sheet-scroll');
   var lastFocus = null;
+  var SCHED_LABELS = { open: 'Veja o que acontece aqui', close: 'Ocultar programação' };
+
+  // color each ticket tier (Mind / VIP / Prime) with its own accent
+  function appendTickets(main, str) {
+    var tk = document.createElement('div');
+    tk.className = 'sched-tickets';
+    String(str).split(',').forEach(function (part, idx) {
+      var name = part.trim();
+      if (!name) return;
+      if (idx > 0) tk.appendChild(document.createTextNode(', '));
+      var span = document.createElement('span');
+      var low = name.toLowerCase();
+      if (low.indexOf('mind') !== -1) span.className = 'tk tk-mind';
+      else if (low.indexOf('vip') !== -1) span.className = 'tk tk-vip';
+      else if (low.indexOf('prime') !== -1) span.className = 'tk tk-prime';
+      else span.className = 'tk';
+      span.textContent = name;
+      tk.appendChild(span);
+    });
+    main.appendChild(tk);
+  }
+
+  // build the per-location schedule (Dia 1 / Dia 2) into the sheet
+  function renderSchedule(sched) {
+    elSched.textContent = '';
+    if (!sched) return;
+    var head = document.createElement('div');
+    head.className = 'sched-head';
+    head.textContent = 'Programação';
+    elSched.appendChild(head);
+    [['Dia 1 · 16 de setembro', sched.d1], ['Dia 2 · 17 de setembro', sched.d2]].forEach(function (day) {
+      if (!day[1] || !day[1].length) return;
+      var dh = document.createElement('div');
+      dh.className = 'sched-day';
+      dh.textContent = day[0];
+      elSched.appendChild(dh);
+      day[1].forEach(function (s) {
+        var row = document.createElement('div');
+        row.className = 'sched-row';
+        var time = document.createElement('div');
+        time.className = 'sched-time';
+        var parts = String(s.t).split(/\s*[–—-]\s*/);
+        if (parts.length === 2) {
+          var t1 = document.createElement('span'); t1.textContent = parts[0].trim();
+          var sep = document.createElement('span'); sep.className = 'sched-time-sep'; sep.textContent = '·';
+          var t2 = document.createElement('span'); t2.textContent = parts[1].trim();
+          time.appendChild(t1); time.appendChild(sep); time.appendChild(t2);
+        } else {
+          time.textContent = String(s.t);
+        }
+        var main = document.createElement('div');
+        main.className = 'sched-main';
+        if (s.k) { var tag = document.createElement('span'); tag.className = 'sched-tag'; tag.textContent = s.k; main.appendChild(tag); }
+        var title = document.createElement('div'); title.className = 'sched-title'; title.textContent = s.s; main.appendChild(title);
+        if (s.q) { var who = document.createElement('div'); who.className = 'sched-who'; who.textContent = s.q; main.appendChild(who); }
+        if (s.i) appendTickets(main, s.i);
+        row.appendChild(time);
+        row.appendChild(main);
+        elSched.appendChild(row);
+      });
+    });
+  }
+
+  function setSchedOpen(open) {
+    if (!elSchedToggle) return;
+    elSched.hidden = !open;
+    elSchedToggle.setAttribute('aria-expanded', String(open));
+    if (elSchedToggleTxt) elSchedToggleTxt.textContent = open ? SCHED_LABELS.close : SCHED_LABELS.open;
+  }
+
+  if (elSchedToggle) {
+    elSchedToggle.addEventListener('click', function () {
+      var willOpen = elSched.hidden;
+      setSchedOpen(willOpen);
+      if (willOpen) {
+        requestAnimationFrame(function () { elSchedToggle.scrollIntoView({ block: 'nearest' }); });
+      }
+    });
+  }
 
   function openSheet(id) {
     var z = ZONES[id];
@@ -89,6 +172,11 @@
     elTitle.textContent = z.t;
     elTitleEn.textContent = z.e;
     elBody.textContent = z.b;
+    var sched = window.SCHEDULE && window.SCHEDULE[id];
+    renderSchedule(sched);
+    if (elSchedToggle) elSchedToggle.hidden = !sched;
+    setSchedOpen(false); // start collapsed; button reveals it
+    if (elScroll) elScroll.scrollTop = 0;
     lastFocus = document.activeElement;
     host.classList.add('is-open');
     document.body.style.overflow = 'hidden';
