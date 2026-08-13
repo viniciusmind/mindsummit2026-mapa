@@ -281,7 +281,7 @@ a:hover{color:var(--light)}
   display:flex;flex-direction:column;gap:14px;
   flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
-  margin:0 -6px;padding:2px 6px;
+  margin:0 -6px;padding:0 6px;
 }
 .sheet-kind{font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--verde);line-height:1;min-height:1em}
 .sheet-titles{display:flex;flex-direction:column;gap:2px}
@@ -296,12 +296,108 @@ a:hover{color:var(--light)}
 }
 .btn-close:hover{background:#f0f0f0}
 
+/* ---- botão flutuante "Como usar" (reabre o tutorial) ---- */
+.tut-help{
+  position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:35;
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--cinza-300);cursor:pointer;
+  background:rgba(19,19,26,0.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  color:var(--cinza-100);font-family:var(--font);font-weight:700;font-size:13px;line-height:1;
+  padding:9px 14px 9px 10px;border-radius:100px;box-shadow:0 6px 18px -6px rgba(0,0,0,0.6);
+  transition:background var(--dur-fast),color var(--dur-fast),transform var(--dur-fast),opacity var(--dur-fast);
+}
+.tut-help:hover{background:rgba(30,30,42,0.94);color:#fff;transform:translateY(-1px)}
+.tut-help.is-tucked{opacity:0;transform:translateY(10px);pointer-events:none}
+.tut-help.tut-hide{display:none}
+.tut-help-q{
+  display:flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;background:var(--verde);color:var(--preto);
+  font-weight:900;font-size:13px;flex:0 0 auto;
+}
+
+/* ============ TUTORIAL (tour guiado — card no topo, mapa demonstra atrás) ============ */
+.tut-host{display:contents}
+.tut-host[hidden]{display:none}
+.tut-backdrop{
+  position:fixed;inset:0;z-index:38;background:transparent;  /* bloqueia toques; mapa segue visível */
+}
+.tut-card{
+  position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));
+  transform:translateX(-50%) translateY(-12px);
+  width:calc(100% - 24px);max-width:400px;max-height:44vh;overflow-y:auto;
+  z-index:60;
+  background:var(--neutral-dark);border:1px solid var(--cinza-300);
+  border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,0.6);
+  padding:20px 22px 18px;
+  opacity:0;transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out);
+}
+.tut-host.in .tut-card{opacity:1;transform:translateX(-50%)}
+/* durante o tour, a folha real fica na metade de baixo pra não cobrir o card */
+body.tour-live .sheet{max-height:58vh}
+.tut-skip{
+  position:absolute;top:14px;right:14px;
+  border:0;cursor:pointer;background:var(--cinza-300);color:var(--cinza-100);
+  font-family:var(--font);font-weight:700;font-size:12.5px;line-height:1;
+  padding:9px 14px;border-radius:100px;
+  transition:background var(--dur-fast),color var(--dur-fast);
+}
+.tut-skip:hover{background:#3a3b4e;color:#fff}
+
+.tut-stage{display:grid;margin-top:16px}   /* steps stack in one cell -> height = tallest */
+.tut-step{
+  grid-area:1/1;
+  opacity:0;transform:translateX(14px);pointer-events:none;
+  transition:opacity .34s var(--ease-out),transform .34s var(--ease-out);
+}
+.tut-step.is-active{opacity:1;transform:none;pointer-events:auto}
+.tut-ico{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(104,238,149,0.14);color:var(--verde);
+  margin-bottom:13px;
+}
+.tut-eyebrow{
+  font-size:11px;font-weight:900;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--verde);line-height:1;margin-bottom:9px;
+}
+.tut-title{
+  font-size:23px;font-weight:900;color:var(--light);line-height:1.12;
+  letter-spacing:-0.02em;margin:0 0 9px;
+}
+.tut-text{
+  font-size:15px;font-weight:400;color:var(--cinza-100);line-height:1.5;
+  margin:0;text-wrap:pretty;
+}
+.tut-text strong{font-weight:700;color:#fff}
+
+.tut-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-top:22px;
+}
+.tut-dots{display:flex;gap:7px}
+.tut-dots span{
+  width:7px;height:7px;border-radius:50%;background:var(--cinza-300);
+  transition:width var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out);
+}
+.tut-dots span.is-active{width:22px;border-radius:100px;background:var(--verde)}
+.tut-next{
+  border:0;cursor:pointer;background:var(--verde);color:var(--preto);
+  font-family:var(--font);font-weight:900;font-size:15px;line-height:1;
+  padding:14px 26px;border-radius:100px;
+  transition:filter var(--dur-fast);
+}
+.tut-next:hover{filter:brightness(1.06)}
+
+@media (prefers-reduced-motion: reduce){
+  .tut-backdrop,.tut-card,.tut-step{transition:none}
+}
+
 /* ---- "veja o que acontece aqui" toggle (congelado no scroll) ---- */
 .sched-toggle-wrap[hidden]{display:none}
 .sched-toggle-wrap{
-  position:sticky;top:0;z-index:5;
+  position:sticky;top:-1px;z-index:5;   /* -1px cobre qualquer fresta de subpixel */
   display:flex;justify-content:center;
-  padding:6px 0 12px;
+  padding:8px 0 12px;
   background:var(--neutral-dark);
   box-shadow:0 8px 14px -8px rgba(0,0,0,0.6);
 }

@@ -377,7 +377,13 @@
     }, true);
 
     layout();
-    return { layout: layout };
+    return {
+      layout: layout,
+      zoomable: zoomable,
+      zoomTo: zoomTo,
+      demoZoom: function () { zoomTo(Math.min(MAX_SCALE, base * 1.9), vpW() * 0.5, vpH() * 0.42); },
+      reset: function () { zoomTo(base, vpW() * 0.5, vpH() * 0.5); }
+    };
   }
 
   var controllers = [];
@@ -495,6 +501,158 @@
       });
     });
   });
+  /* ---------- Guided tour: each step performs the real action on the map ---------- */
+  (function () {
+    var host = document.getElementById('tut-host');
+    if (!host) return;
+    var KEY = 'mindmap_tutorial_v1';
+    var steps = host.querySelectorAll('.tut-step');
+    var dots = host.querySelectorAll('.tut-dots span');
+    var btnNext = document.getElementById('tut-next');
+    var btnSkip = document.getElementById('tut-skip');
+    var btnHelp = document.getElementById('tut-help');
+    var card = host.querySelector('.tut-card');
+    var backdrop = host.querySelector('.tut-backdrop');
+    var ctrl = controllers[0];
+    var sw0 = document.querySelector('.floor2-switch');
+    var mapFrame = document.querySelector('.scale-fit');
+    var i = -1, enterT = null, lastFocus = null;
+    var forced = /tutorial/.test(location.search) || /tutorial/.test(location.hash);
+
+    /* ---- real map actions ---- */
+    function setFilter(cat) {
+      mapRoot.setAttribute('data-filter', cat);
+      filters.querySelectorAll('.pill').forEach(function (p) {
+        p.classList.toggle('is-active', p.getAttribute('data-cat') === cat);
+      });
+    }
+    function setFloor2(on) { if (sw0) { sw0.checked = on; sw0.dispatchEvent(new Event('change')); } }
+    function scrollToY(y) { window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' }); }
+    function scrollMapTop() {
+      if (mapFrame) scrollToY(mapFrame.getBoundingClientRect().top + window.pageYOffset - 96);
+    }
+    function scrollFloor2() {
+      var el = document.querySelector('.floor2-overlay');
+      if (el) scrollToY(el.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * 0.30);
+    }
+    function cleanupMap() {
+      try { setSchedOpen(false); } catch (e) {}
+      try { closeSheet(); } catch (e) {}
+      try { setFilter('all'); } catch (e) {}
+      try { setFloor2(false); } catch (e) {}
+      try { if (ctrl && ctrl.reset) ctrl.reset(); } catch (e) {}
+    }
+
+    var demos = [
+      { enter: function () { scrollMapTop(); openSheet('praca'); },
+        exit: function () { closeSheet(); } },
+      { enter: function () { scrollMapTop(); setFilter('arena'); },
+        exit: function () { setFilter('all'); } },
+      { enter: function () { scrollMapTop(); if (ctrl && ctrl.zoomable && ctrl.zoomable()) ctrl.demoZoom(); },
+        exit: function () { if (ctrl && ctrl.reset) ctrl.reset(); } },
+      { enter: function () { setFloor2(true); setTimeout(scrollFloor2, 80); },
+        exit: function () { setFloor2(false); } },
+      { enter: function () {
+          openSheet('arena-mind');
+          setTimeout(function () {
+            setSchedOpen(true);
+            setTimeout(function () {                    // bring the grid into view inside the sheet
+              var scr = document.getElementById('sheet-scroll');
+              var wrap = document.getElementById('sched-toggle-wrap');
+              if (scr && wrap) {
+                var r1 = wrap.getBoundingClientRect(), r0 = scr.getBoundingClientRect();
+                scr.scrollTo({ top: scr.scrollTop + (r1.top - r0.top) - 8, behavior: 'smooth' });
+              }
+            }, 180);
+          }, 460);
+        },
+        exit: function () { setSchedOpen(false); closeSheet(); } }
+    ];
+
+    /* ---- step machine ---- */
+    function paint(n) {
+      steps.forEach(function (s, k) { s.classList.toggle('is-active', k === n); });
+      dots.forEach(function (d, k) { d.classList.toggle('is-active', k === n); });
+      btnNext.textContent = (n === steps.length - 1) ? 'Concluir' : 'Próximo';
+    }
+    function goTo(n) {
+      n = Math.max(0, Math.min(steps.length - 1, n));
+      if (n === i) return;
+      if (demos[i] && demos[i].exit) demos[i].exit();
+      i = n;
+      paint(n);
+      clearTimeout(enterT);
+      enterT = setTimeout(function () {
+        if (!host.hidden && demos[n] && demos[n].enter) demos[n].enter();
+      }, 320);
+    }
+    function next() { if (i < steps.length - 1) goTo(i + 1); else close(); }
+    function prev() { if (i > 0) goTo(i - 1); }
+
+    function open() {
+      lastFocus = document.activeElement;
+      if (btnHelp) btnHelp.classList.add('tut-hide');
+      document.body.classList.add('tour-live');
+      host.hidden = false;
+      i = -1;
+      requestAnimationFrame(function () { host.classList.add('in'); });
+      goTo(0);
+      btnNext.focus();
+    }
+    function close() {
+      clearTimeout(enterT);
+      host.classList.remove('in');
+      cleanupMap();
+      document.body.classList.remove('tour-live');
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      setTimeout(function () { host.hidden = true; if (btnHelp) btnHelp.classList.remove('tut-hide'); }, 480);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    btnNext.addEventListener('click', next);
+    btnSkip.addEventListener('click', close);
+    if (btnHelp) btnHelp.addEventListener('click', open);
+    if (backdrop) backdrop.addEventListener('click', function () {}); // transparent shield, no accidental close
+
+    document.addEventListener('keydown', function (e) {
+      if (host.hidden) return;
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key === 'ArrowRight') { next(); return; }
+      if (e.key === 'ArrowLeft') { prev(); return; }
+      if (e.key === 'Tab') {                       // keep focus inside the card
+        var f = card.querySelectorAll('button');
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    // swipe between steps (mobile)
+    var x0 = null;
+    card.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    card.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 45) { if (dx < 0) next(); else prev(); }
+      x0 = null;
+    });
+
+    // tuck the floating "Como usar" away when the footer/2nd-floor button is on screen
+    if (btnHelp && 'IntersectionObserver' in window) {
+      var footEl = document.querySelector('.floor-toggle-bottom');
+      if (footEl) {
+        new IntersectionObserver(function (entries) {
+          btnHelp.classList.toggle('is-tucked', entries[0].isIntersecting);
+        }, { rootMargin: '0px 0px -20px 0px' }).observe(footEl);
+      }
+    }
+
+    var seen = false;
+    try { seen = !!localStorage.getItem(KEY); } catch (e) {}
+    if (forced || !seen) open();
+  })();
+
   function relayout() { controllers.forEach(function (c) { c.layout(); }); }
   window.addEventListener('resize', relayout);
   window.addEventListener('load', relayout); // re-fit once webfont settles
