@@ -534,14 +534,16 @@
     function scrollMapTop() {
       if (mapFrame) scrollToY(mapFrame.getBoundingClientRect().top + window.pageYOffset - 96);
     }
-    function scrollElCenter(el) {
+    // place el's center at frac of the viewport height (0.5 = centered)
+    function scrollElCenter(el, frac) {
       if (!el) return;
+      frac = (frac == null) ? 0.5 : frac;
       var r = el.getBoundingClientRect();
-      scrollToY(r.top + window.pageYOffset - (window.innerHeight - r.height) / 2);
+      scrollToY(r.top + window.pageYOffset + r.height / 2 - window.innerHeight * frac);
     }
     function scrollFloor2() {
-      var el = document.querySelector('.floor2-overlay');
-      if (el) scrollToY(el.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * 0.30);
+      var el = document.querySelector('.f2-rooms') || document.querySelector('.floor2-overlay');
+      scrollElCenter(el, 0.62);                     // land on the 2nd floor (below the top card), no overshoot
     }
     function spot(el) {                             // double-pulse the thing we're about to show
       if (!el) return;
@@ -550,7 +552,21 @@
       el.classList.add('tut-spot');
       later(function () { el.classList.remove('tut-spot'); }, 2100);
     }
+    var spotEl = null;
+    function showSpotlight(target, pad) {           // James-Bond vignette around a map zone
+      if (!target) return;
+      pad = (pad == null) ? 16 : pad;
+      if (!spotEl) { spotEl = document.createElement('div'); spotEl.className = 'tut-spotlight'; document.body.appendChild(spotEl); }
+      var r = target.getBoundingClientRect();
+      spotEl.style.left = (r.left - pad) + 'px';
+      spotEl.style.top = (r.top - pad) + 'px';
+      spotEl.style.width = (r.width + pad * 2) + 'px';
+      spotEl.style.height = (r.height + pad * 2) + 'px';
+      requestAnimationFrame(function () { if (spotEl) spotEl.classList.add('on'); });
+    }
+    function hideSpotlight() { if (spotEl) spotEl.classList.remove('on'); }
     function cleanupMap() {
+      try { hideSpotlight(); } catch (e) {}
       try { setSchedOpen(false); } catch (e) {}
       try { closeSheet(); } catch (e) {}
       try { setFilter('all'); } catch (e) {}
@@ -570,42 +586,54 @@
           later(function () { openSheet('praca'); }, 1700);
         },
         exit: function () { closeSheet(); } },
-      { enter: function () {                          // 2) filtros: pulsa a pílula, depois ativa
+      { enter: function () {                          // 2) filtros: mostra a barra e passa por todas as opções
           scrollMapTop();
-          later(function () { spot(filters.querySelector('[data-cat="arena"]')); }, 650);
-          later(function () { setFilter('arena'); }, 1700);
+          later(function () { spot(document.getElementById('filters')); }, 650);
+          var cats = ['arena', 'stand', 'lounge', 'food', 'apoio'];
+          cats.forEach(function (cat, idx) {
+            later(function () {
+              var pill = filters.querySelector('[data-cat="' + cat + '"]');
+              if (pill) filters.scrollTo({ left: pill.offsetLeft - 40, behavior: 'smooth' });
+              setFilter(cat);
+              if (pill) spot(pill);
+            }, 1700 + idx * 1200);                    // uma opção a cada 1,2s, lentamente
+          });
         },
-        exit: function () { setFilter('all'); } },
-      { enter: function () {                          // 3) mover/zoom: pulsa o foco, depois aproxima
+        exit: function () { setFilter('all'); if (filters) filters.scrollTo({ left: 0, behavior: 'smooth' }); } },
+      { enter: function () {                          // 3) mover/zoom: pulsa o foco, aproxima e VOLTA
           scrollMapTop();
           later(function () { spot(document.querySelector('[data-zone="arena-mind"]')); }, 650);
           later(function () { if (ctrl && ctrl.zoomable && ctrl.zoomable()) ctrl.demoZoom(); }, 1700);
+          later(function () { if (ctrl && ctrl.reset) ctrl.reset(); }, 3800); // volta ao normal
         },
         exit: function () { if (ctrl && ctrl.reset) ctrl.reset(); } },
-      { enter: function () {                          // 4) 2º andar: rola até o botão, pulsa, aperta, revela
+      { enter: function () {                          // 4) 2º andar: rola até o botão, pulsa, aperta, revela (sem passar)
           var btn = document.querySelector('.floor-toggle-bottom');
-          scrollElCenter(btn);
+          scrollElCenter(btn, 0.55);
           later(function () { spot(btn && btn.querySelector('.f2-bigbtn-face')); }, 1200);
           later(function () { setFloor2(true); }, 2200);
-          later(scrollFloor2, 3200);
+          later(scrollFloor2, 3300);
         },
         exit: function () { setFloor2(false); } },
-      { enter: function () {                          // 5) programação: abre a arena, pulsa o botão, expande
-          openSheet('arena-mind');
-          later(function () { spot(document.getElementById('sched-toggle')); }, 950);
-          later(function () {
-            setSchedOpen(true);
-            later(function () {                         // traz a grade pra dentro da vista da folha
-              var scr = document.getElementById('sheet-scroll');
-              var wrap = document.getElementById('sched-toggle-wrap');
-              if (scr && wrap) {
-                var r1 = wrap.getBoundingClientRect(), r0 = scr.getBoundingClientRect();
-                scr.scrollTo({ top: scr.scrollTop + (r1.top - r0.top) - 8, behavior: 'smooth' });
-              }
-            }, 550);
-          }, 2050);
+      { enter: function () {                          // 5) FINALE cinematográfico na Arena Top Voice
+          var zone = document.querySelector('[data-zone="arena-topvoice"]');
+          scrollElCenter(zone, 0.5);
+          later(function () { showSpotlight(zone); }, 1300);         // fundo escuro, arena em destaque
+          later(function () { spot(zone); }, 2500);                  // pulso duplo
+          later(function () { hideSpotlight(); openSheet('arena-topvoice'); }, 4600); // clique
+          later(function () { spot(document.getElementById('sched-toggle')); }, 5700); // mostra o botão
+          later(function () { setSchedOpen(true); }, 7400);          // pulso duplo + clique
+          later(function () {                                        // programação surge: rola bem suave
+            var scr = document.getElementById('sheet-scroll');
+            var wrap = document.getElementById('sched-toggle-wrap');
+            if (scr && wrap) {
+              var r1 = wrap.getBoundingClientRect(), r0 = scr.getBoundingClientRect();
+              scr.scrollTo({ top: scr.scrollTop + (r1.top - r0.top) - 8, behavior: 'smooth' });
+            }
+          }, 8100);
+          later(function () { close(); }, 10600);                    // encerra e volta ao topo
         },
-        exit: function () { setSchedOpen(false); closeSheet(); } }
+        exit: function () { hideSpotlight(); setSchedOpen(false); closeSheet(); } }
     ];
 
     /* ---- step machine ---- */
@@ -643,6 +671,7 @@
       host.classList.remove('in');
       cleanupMap();
       document.body.classList.remove('tour-live');
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // volta ao início
       try { localStorage.setItem(KEY, '1'); } catch (e) {}
       setTimeout(function () { host.hidden = true; if (btnHelp) btnHelp.classList.remove('tut-hide'); }, 480);
       if (lastFocus && lastFocus.focus) lastFocus.focus();

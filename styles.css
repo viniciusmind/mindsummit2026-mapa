@@ -329,6 +329,14 @@ a:hover{color:var(--light)}
 .tut-spot{animation:tutSpot 1.9s var(--ease-out) 1}
 @media (prefers-reduced-motion: reduce){ .tut-spot{animation:none} }
 
+/* vinheta "James Bond": escurece tudo menos o elemento em foco */
+.tut-spotlight{
+  position:fixed;z-index:45;pointer-events:none;border-radius:12px;
+  box-shadow:0 0 0 9999px rgba(6,6,10,0.82);
+  opacity:0;transition:opacity .85s var(--ease-out);
+}
+.tut-spotlight.on{opacity:1}
+
 /* ============ TUTORIAL (tour guiado — card no topo, mapa demonstra atrás) ============ */
 .tut-host{display:contents}
 .tut-host[hidden]{display:none}
