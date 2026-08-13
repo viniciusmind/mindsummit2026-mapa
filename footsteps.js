@@ -13,8 +13,6 @@
     { pts: [[25, 3], [59, 3]], dur: 7, phase: 2.1 },          // faixa superior (direita)
     { pts: [[53, 79.5], [67, 79.5]], dur: 6, phase: 1.6 },    // baixo-centro, rumo à Sextante (direita)
     { pts: [[33, 61.5], [33, 79.5]], dur: 6.5, phase: 0.9 },  // entre a praça e os estandes centrais (desce)
-    { pts: [[37, 67.7], [65, 67.7]], dur: 5.2, phase: 2.4 },  // entre as fileiras de estandes (direita)
-    { pts: [[51, 62], [51, 73.5]], dur: 4.6, phase: 1.1 },    // entre as colunas de estandes (desce)
     { pts: [[13, 85.9], [64, 85.9]], dur: 7.2, phase: 3.0 }   // barracas <-> banheiros/escadas/chapelaria (direita)
   ];
 
