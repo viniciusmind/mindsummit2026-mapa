@@ -61,7 +61,9 @@
       { pts: [[58, 57.4], [14, 57.4], [14, 61.4]], dur: 7, phase: 1.8 },                       // direita -> desce na Praça
       { pts: [[50, 79], [30, 79], [30, 80.6]], dur: 5.5, phase: 1.0 },                         // -> barracas da praça (por cima)
       { pts: [[76, 84], [68, 84], [68, 82], [52.5, 82]], dur: 6.5, phase: 2.5 },               // -> barracas da praça (pela direita)
-      { pts: [[88, 54], [88, 58.2]], dur: 3.5, phase: 1.2 }                                    // -> barraca-loja da direita
+      { pts: [[88, 54], [88, 58.2]], dur: 3.5, phase: 1.2 },                                   // barraca-loja de baixo <- de cima
+      { pts: [[95, 29], [95, 44.3]], dur: 4.5, phase: 0.4 },                                   // barraca-loja de cima <- de cima
+      { pts: [[95, 57], [92.6, 58.8]], dur: 3.5, phase: 2.0 }                                  // barraca-loja de baixo <- de baixo
     ],
 
     // APOIO: vêm de longe até banheiros, escadas, chapelaria, topo
