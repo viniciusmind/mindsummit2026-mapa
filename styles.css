@@ -315,6 +315,18 @@ a:hover{color:var(--light)}
   font-weight:900;font-size:13px;flex:0 0 auto;
 }
 
+/* pulso DUPLO que o tour aplica no elemento que vai mostrar */
+@keyframes tutSpot{
+  0%   {box-shadow:0 0 0 0 rgba(104,238,149,.55)}
+  22%  {box-shadow:0 0 0 13px rgba(104,238,149,0)}
+  40%  {box-shadow:0 0 0 0 rgba(104,238,149,0)}
+  55%  {box-shadow:0 0 0 0 rgba(104,238,149,.5)}
+  78%  {box-shadow:0 0 0 13px rgba(104,238,149,0)}
+  100% {box-shadow:0 0 0 0 rgba(104,238,149,0)}
+}
+.tut-spot{animation:tutSpot 1.9s var(--ease-out) 1}
+@media (prefers-reduced-motion: reduce){ .tut-spot{animation:none} }
+
 /* ============ TUTORIAL (tour guiado — card no topo, mapa demonstra atrás) ============ */
 .tut-host{display:contents}
 .tut-host[hidden]{display:none}
@@ -346,8 +358,8 @@ body.tour-live .sheet{max-height:58vh}
 .tut-stage{display:grid;margin-top:16px}   /* steps stack in one cell -> height = tallest */
 .tut-step{
   grid-area:1/1;
-  opacity:0;transform:translateX(14px);pointer-events:none;
-  transition:opacity .34s var(--ease-out),transform .34s var(--ease-out);
+  opacity:0;transform:translateX(16px);pointer-events:none;
+  transition:opacity .5s var(--ease-out),transform .5s var(--ease-out);
 }
 .tut-step.is-active{opacity:1;transform:none;pointer-events:auto}
 .tut-ico{

@@ -294,13 +294,14 @@
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     }
 
-    function zoomTo(target, px, py) {
+    function zoomTo(target, px, py, dur) {
+      dur = dur || 220;
       target = Math.min(maxScale(), Math.max(base, target));
       var cx = (px - tx) / scale, cy = (py - ty) / scale;
       scale = target; tx = px - cx * scale; ty = py - cy * scale;
-      content.style.transition = 'transform 220ms cubic-bezier(0.16,1,0.3,1)';
+      content.style.transition = 'transform ' + dur + 'ms cubic-bezier(0.16,1,0.3,1)';
       clampAndApply();
-      setTimeout(function () { content.style.transition = ''; }, 240);
+      setTimeout(function () { content.style.transition = ''; }, dur + 20);
     }
 
     function capture(id) { try { frame.setPointerCapture(id); } catch (_) {} }
@@ -381,8 +382,8 @@
       layout: layout,
       zoomable: zoomable,
       zoomTo: zoomTo,
-      demoZoom: function () { zoomTo(Math.min(MAX_SCALE, base * 1.9), vpW() * 0.5, vpH() * 0.42); },
-      reset: function () { zoomTo(base, vpW() * 0.5, vpH() * 0.5); }
+      demoZoom: function () { zoomTo(Math.min(MAX_SCALE, base * 1.9), vpW() * 0.5, vpH() * 0.42, 1300); },
+      reset: function () { zoomTo(base, vpW() * 0.5, vpH() * 0.5, 1000); }
     };
   }
 
@@ -516,7 +517,7 @@
     var ctrl = controllers[0];
     var sw0 = document.querySelector('.floor2-switch');
     var mapFrame = document.querySelector('.scale-fit');
-    var i = -1, enterT = null, lastFocus = null;
+    var i = -1, lastFocus = null;
     var forced = /tutorial/.test(location.search) || /tutorial/.test(location.hash);
 
     /* ---- real map actions ---- */
@@ -531,9 +532,21 @@
     function scrollMapTop() {
       if (mapFrame) scrollToY(mapFrame.getBoundingClientRect().top + window.pageYOffset - 96);
     }
+    function scrollElCenter(el) {
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      scrollToY(r.top + window.pageYOffset - (window.innerHeight - r.height) / 2);
+    }
     function scrollFloor2() {
       var el = document.querySelector('.floor2-overlay');
       if (el) scrollToY(el.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * 0.30);
+    }
+    function spot(el) {                             // double-pulse the thing we're about to show
+      if (!el) return;
+      el.classList.remove('tut-spot');
+      void el.offsetWidth;                          // restart the animation if re-triggered
+      el.classList.add('tut-spot');
+      later(function () { el.classList.remove('tut-spot'); }, 2100);
     }
     function cleanupMap() {
       try { setSchedOpen(false); } catch (e) {}
@@ -543,28 +556,52 @@
       try { if (ctrl && ctrl.reset) ctrl.reset(); } catch (e) {}
     }
 
+    // all deferred step actions go through here so they can be cancelled on step change
+    var pending = [];
+    function later(fn, ms) { var id = setTimeout(fn, ms); pending.push(id); return id; }
+    function clearPending() { pending.forEach(clearTimeout); pending = []; }
+
     var demos = [
-      { enter: function () { scrollMapTop(); openSheet('praca'); },
+      { enter: function () {                          // 1) explorar: pulsa a zona, depois abre
+          scrollMapTop();
+          later(function () { spot(document.querySelector('[data-zone="praca"]')); }, 650);
+          later(function () { openSheet('praca'); }, 1700);
+        },
         exit: function () { closeSheet(); } },
-      { enter: function () { scrollMapTop(); setFilter('arena'); },
+      { enter: function () {                          // 2) filtros: pulsa a pílula, depois ativa
+          scrollMapTop();
+          later(function () { spot(filters.querySelector('[data-cat="arena"]')); }, 650);
+          later(function () { setFilter('arena'); }, 1700);
+        },
         exit: function () { setFilter('all'); } },
-      { enter: function () { scrollMapTop(); if (ctrl && ctrl.zoomable && ctrl.zoomable()) ctrl.demoZoom(); },
+      { enter: function () {                          // 3) mover/zoom: pulsa o foco, depois aproxima
+          scrollMapTop();
+          later(function () { spot(document.querySelector('[data-zone="arena-mind"]')); }, 650);
+          later(function () { if (ctrl && ctrl.zoomable && ctrl.zoomable()) ctrl.demoZoom(); }, 1700);
+        },
         exit: function () { if (ctrl && ctrl.reset) ctrl.reset(); } },
-      { enter: function () { setFloor2(true); setTimeout(scrollFloor2, 80); },
+      { enter: function () {                          // 4) 2º andar: rola até o botão, pulsa, aperta, revela
+          var btn = document.querySelector('.floor-toggle-bottom');
+          scrollElCenter(btn);
+          later(function () { spot(btn && btn.querySelector('.f2-bigbtn-face')); }, 1200);
+          later(function () { setFloor2(true); }, 2200);
+          later(scrollFloor2, 3200);
+        },
         exit: function () { setFloor2(false); } },
-      { enter: function () {
+      { enter: function () {                          // 5) programação: abre a arena, pulsa o botão, expande
           openSheet('arena-mind');
-          setTimeout(function () {
+          later(function () { spot(document.getElementById('sched-toggle')); }, 950);
+          later(function () {
             setSchedOpen(true);
-            setTimeout(function () {                    // bring the grid into view inside the sheet
+            later(function () {                         // traz a grade pra dentro da vista da folha
               var scr = document.getElementById('sheet-scroll');
               var wrap = document.getElementById('sched-toggle-wrap');
               if (scr && wrap) {
                 var r1 = wrap.getBoundingClientRect(), r0 = scr.getBoundingClientRect();
                 scr.scrollTo({ top: scr.scrollTop + (r1.top - r0.top) - 8, behavior: 'smooth' });
               }
-            }, 180);
-          }, 460);
+            }, 550);
+          }, 2050);
         },
         exit: function () { setSchedOpen(false); closeSheet(); } }
     ];
@@ -578,13 +615,13 @@
     function goTo(n) {
       n = Math.max(0, Math.min(steps.length - 1, n));
       if (n === i) return;
+      clearPending();                              // cancel the previous step's deferred actions
       if (demos[i] && demos[i].exit) demos[i].exit();
       i = n;
       paint(n);
-      clearTimeout(enterT);
-      enterT = setTimeout(function () {
+      later(function () {                          // let the exit settle before the new demo runs
         if (!host.hidden && demos[n] && demos[n].enter) demos[n].enter();
-      }, 320);
+      }, 700);
     }
     function next() { if (i < steps.length - 1) goTo(i + 1); else close(); }
     function prev() { if (i > 0) goTo(i - 1); }
@@ -600,7 +637,7 @@
       btnNext.focus();
     }
     function close() {
-      clearTimeout(enterT);
+      clearPending();
       host.classList.remove('in');
       cleanupMap();
       document.body.classList.remove('tour-live');
