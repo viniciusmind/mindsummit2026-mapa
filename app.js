@@ -292,6 +292,7 @@
     switches.forEach(function (sw) {
       sw.addEventListener('change', function () {
         var on = sw.checked;
+        mapRoot.classList.add('floor2-seen'); // stop the attention pulse once used
         mapRoot.classList.toggle('show-floor2', on);
         switches.forEach(function (o) { if (o !== sw) o.checked = on; }); // keep both toggles in sync
         if (on && !floor2Pulsed && !reduce) {
