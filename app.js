@@ -658,6 +658,8 @@
       dots.forEach(function (d, k) { d.classList.toggle('is-active', k === n); });
       btnNext.textContent = (n === steps.length - 1) ? 'Concluir' : 'Próximo';
     }
+    // quanto cada passo fica na tela antes de avançar sozinho (o último se encerra na própria demo)
+    var HOLDS = [7200, 9000, 5000, 5800];
     function goTo(n) {
       n = Math.max(0, Math.min(steps.length - 1, n));
       if (n === i) return;
@@ -668,6 +670,9 @@
       later(function () {                          // let the exit settle before the new demo runs
         if (!host.hidden && demos[n] && demos[n].enter) demos[n].enter();
       }, 700);
+      if (n < steps.length - 1 && HOLDS[n] != null) {   // auto-advance
+        later(function () { if (!host.hidden) goTo(n + 1); }, HOLDS[n]);
+      }
     }
     function next() { if (i < steps.length - 1) goTo(i + 1); else close(); }
     function prev() { if (i > 0) goTo(i - 1); }
@@ -680,7 +685,7 @@
       i = -1;
       requestAnimationFrame(function () { host.classList.add('in'); });
       goTo(0);
-      btnNext.focus();
+      if (btnSkip) btnSkip.focus();
     }
     function close() {
       clearPending();

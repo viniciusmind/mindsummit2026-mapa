@@ -416,7 +416,7 @@ body.tour-live .sheet{max-height:58vh}
 .tut-text strong{font-weight:700;color:#fff}
 
 .tut-foot{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  display:flex;align-items:center;justify-content:center;gap:16px;
   margin-top:22px;
 }
 .tut-dots{display:flex;gap:7px}
@@ -425,13 +425,7 @@ body.tour-live .sheet{max-height:58vh}
   transition:width var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out);
 }
 .tut-dots span.is-active{width:22px;border-radius:100px;background:var(--verde)}
-.tut-next{
-  border:0;cursor:pointer;background:var(--verde);color:var(--preto);
-  font-family:var(--font);font-weight:900;font-size:15px;line-height:1;
-  padding:14px 26px;border-radius:100px;
-  transition:filter var(--dur-fast);
-}
-.tut-next:hover{filter:brightness(1.06)}
+.tut-next{display:none}   /* tutorial passa automático, sem botão de próximo */
 
 @media (prefers-reduced-motion: reduce){
   .tut-backdrop,.tut-card,.tut-step{transition:none}
