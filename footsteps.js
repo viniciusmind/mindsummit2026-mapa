@@ -147,8 +147,9 @@
     var box = document.createElement('div');
     box.className = 'footsteps footsteps-f2 f2-rise';   // sobe junto com o corredor
     box.setAttribute('aria-hidden', 'true');
-    // barra do corredor: left 2% / top 81.8% / height 2.9% -> centro y ≈ 83.25%; texto fica à esquerda
-    buildTrail(box, { pts: [[47, 83.25], [95, 83.25]], dur: 6 });
+    // vindo das escadas/elevadores PARA o corredor (centro y ≈ 83.25%); tudo à direita do texto
+    buildTrail(box, { pts: [[45, 87], [45, 83.25], [61, 83.25]], dur: 5, phase: 0 });       // escada do meio -> corredor (direita)
+    buildTrail(box, { pts: [[94.5, 87], [94.5, 83.25], [79, 83.25]], dur: 5.5, phase: 1.4 }); // elevador da direita -> corredor (esquerda)
     content.appendChild(box); // último filho = por cima da barra do corredor
   }
 
