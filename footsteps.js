@@ -140,8 +140,21 @@
     return (mr && mr.getAttribute('data-filter')) || 'all';
   }
 
+  // pegadas no corredor principal do 2º andar (só aparecem quando o overlay abre)
+  function buildFloor2() {
+    var content = document.querySelector('.floor2-overlay .f2-content');
+    if (!content || content.querySelector('.footsteps-f2')) return;
+    var box = document.createElement('div');
+    box.className = 'footsteps footsteps-f2 f2-rise';   // sobe junto com o corredor
+    box.setAttribute('aria-hidden', 'true');
+    // barra do corredor: left 2% / top 81.8% / height 2.9% -> centro y ≈ 83.25%; texto fica à esquerda
+    buildTrail(box, { pts: [[47, 83.25], [95, 83.25]], dur: 6 });
+    content.appendChild(box); // último filho = por cima da barra do corredor
+  }
+
   function init() {
     render(currentCat());
+    buildFloor2();
     var mr = document.querySelector('.map-root');
     if (mr && window.MutationObserver) {
       new MutationObserver(function () { render(currentCat()); })
