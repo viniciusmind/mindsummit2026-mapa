@@ -203,6 +203,10 @@ a:hover{color:var(--light)}
 
 .zone{pointer-events:auto;cursor:pointer}
 .zone:hover{outline:2px solid rgba(255,255,255,0.35);outline-offset:2px;border-radius:8px}
+/* stands + Well Z desativados (não clicáveis). Restaurar ao normal: remover esta
+   regra E recolocar os logos originais (ver memória stands-blanked). */
+.map-root .zone[data-zone^="stand-"],
+.map-root .zone[data-zone="wellz"]{pointer-events:none}
 
 /* praça: clickable only on the painted parts (not the transparent notch).
    The hover border is a single L-shaped SVG stroke tracing the whole block,
