@@ -42,7 +42,7 @@
     'stand-livre': { k: 'Estande · Booth', t: 'Estande 8 × 5 m', e: 'Booth', b: 'Espaço de ativação no bloco central, ao lado do estande Natura.' },
     praca: { k: 'Alimentação · Food', t: 'Praça de Alimentação', e: 'Food court', b: 'A praça principal, na lateral esquerda do pavilhão, com mesas e opções quentes, frias e doces.' },
     barracas: { k: 'Alimentação · Food', t: 'Barracas de alimentação', e: 'Food stalls', b: 'Pontos avulsos de comida e bebida espalhados pelo pavilhão: um junto à entrada e dois no corredor direito.' },
-    credenciamento: { k: 'Entrada · Entrance', t: 'Credenciamento', e: 'Check-in', b: 'Retirada de credencial logo na entrada: fila Prime / Patrocinador à esquerda e fila Mind / VIP à direita. Tenha o QR code do ingresso em mãos.' },
+    credenciamento: { k: 'Entrada · Entrance', t: 'Credenciamento', e: 'Check-in', b: 'Retirada de credencial logo na entrada: à esquerda, filas VIP e Mind; à direita, filas Patrocinadores, Palestrantes e Prime. Tenha o QR code do ingresso em mãos.' },
     'elevador-1': { k: 'Apoio · Services', t: 'Elevador', e: 'Elevator', b: 'Elevador de acesso ao 2º andar (Centro de Convenções), ao lado das escadas e do credenciamento.' },
     'elevador-2': { k: 'Apoio · Services', t: 'Elevador', e: 'Elevator', b: 'Elevador de acesso ao 2º andar (Centro de Convenções), ao lado das escadas e do credenciamento.' },
     'sala-vip3': { k: '2º andar · Sala', t: 'Workshop VIP 3', e: 'VIP Workshop 3', b: 'Sala 208 C · D, no Centro de Convenções (2º andar). Workshops exclusivos para credenciais VIP.' },

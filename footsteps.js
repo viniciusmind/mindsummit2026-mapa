@@ -66,13 +66,11 @@
       { pts: [[95, 57], [92.6, 58.8]], dur: 3.5, phase: 2.0 }                                  // barraca-loja de baixo <- de baixo
     ],
 
-    // APOIO: vêm de longe até banheiros, escadas, chapelaria, topo
+    // APOIO: coluna empilhada no meio (banheiro/chapelaria/escada) + banheiro do corredor + canto direito
     apoio: [
-      { pts: [[76, 96], [76, 85.9], [57, 85.9], [57, 88.1]], dur: 8, phase: 0.5 },            // entrada -> chapelaria
-      { pts: [[64, 85.9], [13, 85.9]], dur: 8, phase: 2.0 },                                   // corredor de apoio (esquerda)
-      { pts: [[45, 85.9], [45, 88.1]], dur: 3.5, phase: 1.0 },                                 // -> escadas
-      { pts: [[32, 85.9], [32, 88.1]], dur: 3.5, phase: 1.6 },                                 // -> banheiros
-      { pts: [[68, 72], [68, 8], [60, 4], [22.5, 3]], dur: 9.5, phase: 2.6 }                   // contorna a Arena Mind -> banheiro do topo (final)
+      { pts: [[45, 86], [45, 99]], dur: 7, phase: 0.4 },                                        // desce a coluna: banheiro -> chapelaria -> escada
+      { pts: [[68, 72], [68, 7.5]], dur: 8.5, phase: 1.4 },                                      // corredor central -> banheiro (topo do corredor)
+      { pts: [[94.5, 82], [94.5, 89]], dur: 4.5, phase: 2.0 }                                    // -> escada/elevador da direita
     ]
   };
 
