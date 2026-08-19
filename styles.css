@@ -684,6 +684,13 @@ body.tour-live .sheet{max-height:58vh}
   background:#ece2ac;
 }
 .f2-bigbtn input:focus-visible + .f2-bigbtn-face{outline:2px solid #13131A;outline-offset:3px}
+/* rótulo alterna com roll vertical: "2º andar" (térreo) <-> "Térreo" (2º andar) */
+.f2-label-wrap{position:relative;display:inline-grid;justify-items:center;overflow:hidden}
+.f2-label{grid-area:1/1;white-space:nowrap;transition:opacity .3s var(--ease-out),transform .34s var(--ease-out)}
+.f2-label-down{opacity:0;transform:translateY(105%)}
+.f2-bigbtn input:checked + .f2-bigbtn-face .f2-label-up{opacity:0;transform:translateY(-105%)}
+.f2-bigbtn input:checked + .f2-bigbtn-face .f2-label-down{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){ .f2-label{transition:none} }
 
 /* ---- ground floor blurs away when the upper floor is shown ---- */
 .map-inner{transition:filter var(--dur-base) var(--ease-out) .3s}          /* exit: un-blur last */

@@ -35,13 +35,12 @@
       { pts: [[53, 79.5], [68, 79.5], [68, 69], [71.9, 68]], dur: 7, phase: 1.0 }             // vem de baixo -> Sextante
     ],
 
-    // ESTANDES: vêm da entrada, da esquerda e do banheiro até os stands
+    // ESTANDES: vêm da entrada e da esquerda até os stands
     stand: [
       { pts: [[76, 96], [76, 84], [68, 84], [68, 45], [71.7, 44.5]], dur: 9, phase: 0.5 },   // entrada -> estandes da direita
-      { pts: [[6, 57.4], [42, 57.4], [42, 61.6]], dur: 7.5, phase: 1.6 },                     // esquerda -> estandes centrais
+      { pts: [[6, 57.4], [42, 57.4], [42, 58.7]], dur: 7.5, phase: 1.6 },                     // esquerda -> estandes centrais (fila de cima)
       { pts: [[68, 72], [68, 59], [72.6, 59]], dur: 6, phase: 0.9 },                          // corredor central -> Well Z
-      { pts: [[28, 65], [36.6, 65]], dur: 4, phase: 2.3 },                                    // lateral -> stand central
-      { pts: [[32, 88], [32, 84], [32, 66], [36.6, 65]], dur: 7, phase: 3.1 }                 // banheiro (base) -> sobe -> estandes
+      { pts: [[28, 61], [36.6, 61]], dur: 4, phase: 2.3 }                                     // lateral -> stand central
     ],
 
     // LOUNGES: vêm de longe (entrada, esquerda e banheiros) até os lounges + BWG
