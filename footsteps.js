@@ -18,7 +18,6 @@
     { pts: [[67.5, 11], [67.5, 79]], dur: 8.5 },              // corredor vertical central (desce)
     { pts: [[6, 57.4], [58, 57.4]], dur: 7.5, phase: 1.2 },   // corredor horizontal do meio (direita)
     { pts: [[76, 96], [76, 83]], dur: 5.5, phase: 0.6 },      // entrada -> credenciamento (sobe)
-    { pts: [[25, 3], [59, 3]], dur: 7, phase: 2.1 },          // faixa superior (direita)
     { pts: [[53, 79.5], [67, 79.5]], dur: 6, phase: 1.6 },    // baixo-centro, rumo à Sextante
     { pts: [[33, 61.5], [33, 79.5]], dur: 6.5, phase: 0.9 },  // entre a praça e os estandes centrais
     { pts: [[13, 85.9], [64, 85.9]], dur: 7.2, phase: 3.0 }   // barracas <-> banheiros/escadas/chapelaria
